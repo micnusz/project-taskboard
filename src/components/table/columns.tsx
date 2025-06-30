@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { ColumnDef } from "@tanstack/react-table";
 import { Task } from "../../../prisma/prisma";
+import formatStatus from "@/modules/format-status";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -70,9 +71,15 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("status")}</div>
-    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+      return <div className="lowercase">{formatStatus(status)}</div>;
+    },
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => <div className="lowercase">{row.getValue("type")}</div>,
   },
   {
     accessorKey: "priority",
