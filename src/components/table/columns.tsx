@@ -19,6 +19,9 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { Task } from "../../../prisma/prisma";
 import formatStatus from "@/modules/format-status";
+import { Badge } from "../ui/badge";
+import formatPriority from "@/modules/format-priority";
+import { formatDate } from "@/modules/format-date";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -64,22 +67,28 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("description")}</div>
-    ),
+    cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      return <div className="lowercase">{formatStatus(status)}</div>;
+      return (
+        <div>
+          <Badge variant="outline">{formatStatus(status)}</Badge>
+        </div>
+      );
     },
   },
   {
     accessorKey: "type",
     header: "Type",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("type")}</div>,
+    cell: ({ row }) => (
+      <div>
+        <Badge variant="outline">{row.getValue("type")}</Badge>
+      </div>
+    ),
   },
   {
     accessorKey: "priority",
@@ -106,16 +115,21 @@ export const columns: ColumnDef<Task>[] = [
         </SelectContent>
       </Select>
     ),
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("priority")}</div>
-    ),
+    cell: ({ row }) => {
+      const priority = row.getValue("priority") as string;
+      return (
+        <div>
+          <Badge variant="outline">{formatPriority(priority)}</Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
     header: "Created At",
     cell: ({ row }) => {
       const date: Date = row.getValue("createdAt");
-      return <div>{date.toLocaleDateString("pl-PL")}</div>;
+      return <div>{formatDate(date)}</div>;
     },
   },
 

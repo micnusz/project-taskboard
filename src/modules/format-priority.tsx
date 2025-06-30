@@ -1,37 +1,30 @@
-import { Check, Clock, FileQuestion, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
 import React from "react";
 
-const formatStatus = (status: string) => {
-  const formattedText = status
+const formatPriority = (priority: string) => {
+  const formattedText = priority
     .toLowerCase()
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 
-  if (status === "TODO")
+  if (priority === "LOW")
     return (
       <div className="flex items-center gap-1">
-        <FileQuestion className="w-4 h-4" />
+        <ChevronDown className="w-4 h-4" />
         {formattedText}
       </div>
     );
-  if (status === "IN_PROGRESS")
+  if (priority === "MEDIUM")
     return (
       <div className="flex items-center gap-1">
-        <Clock className="w-4 h-4" />
+        <ChevronRight className="w-4 h-4" />
         {formattedText}
       </div>
     );
-  if (status === "DONE")
+  if (priority === "HIGH")
     return (
       <div className="flex items-center gap-1">
-        <Check className="w-4 h-4" />
-        {formattedText}
-      </div>
-    );
-  if (status === "CANCELED")
-    return (
-      <div className="flex items-center gap-1">
-        <X className="w-4 h-4" />
+        <ChevronUp className="w-4 h-4" />
         {formattedText}
       </div>
     );
@@ -40,4 +33,4 @@ const formatStatus = (status: string) => {
   return <div>{formattedText}</div>;
 };
 
-export default formatStatus;
+export default formatPriority;
