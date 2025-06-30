@@ -64,7 +64,7 @@ const HomeClientPage = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full px-4 py-4 border rounded mb-2"
         />
-        <DataTable columns={columns} data={data ?? []} />
+        <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
       </div>
     </main>
   );

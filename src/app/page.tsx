@@ -1,6 +1,6 @@
 "use server";
 
-import { getTasks } from "@/actions/actions";
+import { getTasks, searchTask } from "@/actions/actions";
 import HomeClientPage from "@/components/pages/Home";
 import { getQueryClient } from "@/lib/get-query-client";
 import Spinner from "@/lib/Spinner";
@@ -10,8 +10,8 @@ import React from "react";
 export default async function Home() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["tasks"],
-    queryFn: () => getTasks(),
+    queryKey: ["task", ""],
+    queryFn: () => searchTask(""),
   });
 
   return (
