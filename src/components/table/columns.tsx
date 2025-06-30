@@ -22,6 +22,9 @@ import formatStatus from "@/modules/format-status";
 import { Badge } from "../ui/badge";
 import formatPriority from "@/modules/format-priority";
 import { formatDate } from "@/modules/format-date";
+import { deletePost } from "@/actions/actions";
+import { useState } from "react";
+import AlertDelete from "../ui/alert-task-delete";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -137,27 +140,43 @@ export const columns: ColumnDef<Task>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const task = row.original;
+      const id = task.id;
+
+      const [alert, setAlert] = useState<{
+        message: string;
+        type: "success" | "error";
+      } | null>(null);
+
+      const handleDelete = async () => {
+        const res = await deletePost(id);
+        if (res.message === "Task deleted successfully!") {
+          setAlert({ message: res.message, type: "success" });
+        } else {
+          setAlert({ message: res.message, type: "error" });
+        }
+      };
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          {alert && <AlertDelete message={alert.message} type={alert.type} />}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
+                Delete Task
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

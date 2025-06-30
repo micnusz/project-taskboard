@@ -20,8 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { Button } from "../ui/button";
-import DataTableSearchClient from "./data-table-search";
+import { Input } from "../ui/input";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,12 +57,6 @@ export function DataTable<TData, TValue>({
   return (
     <>
       <div className="w-full flex flex-col gap-4">
-        <div className="flex items-center pt-4">
-          <DataTableSearchClient table={table} />
-          <Button variant="secondary" size="sm" className="mx-2">
-            Clear
-          </Button>
-        </div>
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (

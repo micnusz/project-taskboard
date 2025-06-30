@@ -1,10 +1,24 @@
 "use server";
 
+import { getTasks } from "@/actions/actions";
 import HomeClientPage from "@/components/pages/Home";
-import prisma from "@/lib/prisma";
+import { getQueryClient } from "@/lib/get-query-client";
+import Spinner from "@/lib/Spinner";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import React from "react";
 
 export default async function Home() {
-  const tasks = await prisma.task.findMany();
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["tasks"],
+    queryFn: () => getTasks(),
+  });
 
-  return <HomeClientPage tasks={tasks} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <React.Suspense fallback={<Spinner />}>
+        <HomeClientPage />
+      </React.Suspense>
+    </HydrationBoundary>
+  );
 }
