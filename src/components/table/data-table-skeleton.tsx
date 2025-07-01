@@ -12,9 +12,9 @@ interface DataTableSkeletonProps extends React.ComponentProps<"div"> {
 
 export function DataTableSkeleton({
   columnCount,
-  rowCount = 20,
+  rowCount = 10,
   cellWidths = ["auto"],
-  withPagination = true,
+  withPagination = false,
   shrinkZero = false,
   className,
   ...props

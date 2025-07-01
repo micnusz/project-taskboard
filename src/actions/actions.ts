@@ -78,7 +78,12 @@ export const deletePost = async (id: string) => {
   }
 };
 
-export const searchTask = async (searchInput: string) => {
+export const searchTask = async (
+  searchInput: string,
+  limit: number,
+  offset: number,
+  priority?: Priority
+) => {
   try {
     const tasks = await prisma.task.findMany({
       where: {
@@ -86,7 +91,10 @@ export const searchTask = async (searchInput: string) => {
           contains: searchInput,
           mode: "insensitive",
         },
+        priority: priority,
       },
+      skip: offset,
+      take: limit,
     });
     return tasks;
   } catch (e) {

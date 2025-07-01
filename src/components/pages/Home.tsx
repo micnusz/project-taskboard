@@ -16,11 +16,21 @@ import { searchTask } from "@/actions/actions";
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { Input } from "../ui/input";
+import DataTablePagination from "../table/data-table-pagination";
+import DataTableFilters from "../table/data-table-filters";
 
 const HomeClientPage = () => {
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [queryText, setQueryText] = useState("");
+  const [priority, setPriority] = useState();
+  const [status, setStatus] = useState("");
+  const [type, setType] = useState("");
 
+  const offset = pagination.pageIndex * pagination.pageSize;
+  const limit = pagination.pageSize;
+
+  //Search bar
   const debouncedSetQueryText = useMemo(
     () =>
       debounce((text: string) => {
@@ -37,10 +47,23 @@ const HomeClientPage = () => {
   }, [search, debouncedSetQueryText]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["task", queryText],
-    queryFn: () => searchTask(queryText),
+    queryKey: ["task", queryText, limit, offset, priority],
+    queryFn: () => searchTask(queryText, limit, offset, priority),
     enabled: true,
   });
+
+  //Pagination
+  const totalCount = 3980;
+  const pageCount = Math.ceil(totalCount / pagination.pageSize);
+
+  function handlePageChange(newPageIndex: number) {
+    if (newPageIndex < 0 || newPageIndex >= pageCount) return;
+    setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
+  }
+
+  function handlePageSizeChange(newPageSize: number) {
+    setPagination({ pageIndex: 0, pageSize: newPageSize });
+  }
 
   return (
     <main className="px-fluid ">
@@ -64,7 +87,18 @@ const HomeClientPage = () => {
           onChange={(e) => setSearch(e.target.value)}
           className="w-full px-4 py-4 border rounded mb-2"
         />
+        <DataTableFilters priority={priority} setPriority={setPriority} />
+
         <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
+        <DataTablePagination
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          canPreviousPage={pagination.pageIndex > 0}
+          canNextPage={pagination.pageIndex + 1 < pageCount}
+        />
       </div>
     </main>
   );

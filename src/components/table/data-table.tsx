@@ -32,28 +32,18 @@ export function DataTable<TData, TValue>({
   data,
   isLoading,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
   const table = useReactTable({
     columns,
     data,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
     initialState: {
       pagination: {
         pageSize: 10,
       },
     },
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    manualFiltering: true,
+    manualPagination: true,
   });
 
   return (
@@ -79,15 +69,16 @@ export function DataTable<TData, TValue>({
           <TableRow>
             <TableCell colSpan={columns.length} className="p-0">
               <DataTableSkeleton
-                columnCount={7}
+                columnCount={8}
                 cellWidths={[
-                  "2rem",
-                  "6rem",
-                  "12rem",
+                  "1rem",
+                  "3rem",
+                  "7rem",
                   "4rem",
                   "4rem",
                   "4rem",
                   "6rem",
+                  "3rem",
                 ]}
                 shrinkZero
                 className="p-0 md:p-0 md:mt-0 m-0"
