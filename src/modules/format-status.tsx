@@ -1,4 +1,4 @@
-import { Check, Clock, FileQuestion, X } from "lucide-react";
+import { CircleCheck, CircleDashed, CircleX, Clock } from "lucide-react";
 import React from "react";
 
 const formatStatus = (status: string) => {
@@ -10,7 +10,7 @@ const formatStatus = (status: string) => {
   if (status === "TODO")
     return (
       <div className="flex items-center gap-1">
-        <FileQuestion className="w-4 h-4" />
+        <CircleDashed className="w-4 h-4" />
         {formattedText}
       </div>
     );
@@ -24,14 +24,14 @@ const formatStatus = (status: string) => {
   if (status === "DONE")
     return (
       <div className="flex items-center gap-1">
-        <Check className="w-4 h-4" />
+        <CircleCheck className="w-4 h-4" />
         {formattedText}
       </div>
     );
   if (status === "CANCELED")
     return (
       <div className="flex items-center gap-1">
-        <X className="w-4 h-4" />
+        <CircleX className="w-4 h-4" />
         {formattedText}
       </div>
     );

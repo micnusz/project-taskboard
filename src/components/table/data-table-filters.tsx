@@ -14,6 +14,9 @@ import {
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Priority, Status, Type } from "../../../prisma/prisma";
+import formatStatus from "@/modules/format-status";
+import formatPriority from "@/modules/format-priority";
+import formatType from "@/modules/format-type";
 
 type DataTableFiltersProps = {
   priority: Priority | undefined;
@@ -69,7 +72,7 @@ const DataTableFilters = ({
           {buttonLabel}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 rounded-lg shadow-md p-0">
+      <PopoverContent className="w-[15rem] rounded-lg shadow-md p-1">
         <Command>
           <ScrollArea className="max-h-[24rem] overflow-y-auto">
             <CommandInput placeholder="Search filters..." />
@@ -80,13 +83,13 @@ const DataTableFilters = ({
               <>
                 <CommandGroup>
                   <CommandItem onSelect={() => setView("status")}>
-                    {getStatusLabel()}
+                    {formatStatus(getStatusLabel())}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("type")}>
-                    {getTypeLabel()}
+                    {formatType(getTypeLabel())}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("priority")}>
-                    {getPriorityLabel()}
+                    {formatPriority(getPriorityLabel())}
                   </CommandItem>
                 </CommandGroup>
                 <div className="border-t p-2">
@@ -121,28 +124,25 @@ const DataTableFilters = ({
                   </CommandItem>
                 </CommandGroup>
                 <CommandGroup>
-                  {["HIGH", "MEDIUM", "LOW", "All"].map((item) => {
+                  {["HIGH", "MEDIUM", "LOW"].map((item) => {
                     const isSelected =
                       priority === item ||
-                      (item === "All" && priority === undefined);
+                      (item === "None" && priority === undefined);
                     return (
                       <CommandItem
+                        className={cn(isSelected ? "bg-accent/70" : "")}
                         key={item}
                         onSelect={() => {
-                          setPriority(
-                            item === "All" ? undefined : (item as Priority)
-                          );
+                          if (priority === item) {
+                            setPriority(undefined);
+                          } else {
+                            setPriority(item as Priority);
+                          }
                           setOpen(true);
                           setView("root");
                         }}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            isSelected ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {item}
+                        {formatPriority(item)}
                       </CommandItem>
                     );
                   })}
@@ -173,33 +173,32 @@ const DataTableFilters = ({
                   </CommandItem>
                 </CommandGroup>
                 <CommandGroup>
-                  {["TODO", "IN_PROGRESS", "DONE", "CANCELED", "All"].map(
-                    (item) => {
+                  {["TODO", "IN_PROGRESS", "DONE", "CANCELED"]
+                    .sort((a, b) => {
+                      return a.localeCompare(b);
+                    })
+                    .map((item) => {
                       const isSelected =
                         status === item ||
-                        (item === "All" && status === undefined);
+                        (item === "None" && status === undefined);
                       return (
                         <CommandItem
+                          className={cn(isSelected ? "bg-accent/70" : "")}
                           key={item}
                           onSelect={() => {
-                            setStatus(
-                              item === "All" ? undefined : (item as Status)
-                            );
+                            if (status === item) {
+                              setStatus(undefined);
+                            } else {
+                              setStatus(item as Status);
+                            }
                             setOpen(true);
                             setView("root");
                           }}
                         >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              isSelected ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {item}
+                          {formatStatus(item)}
                         </CommandItem>
                       );
-                    }
-                  )}
+                    })}
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
@@ -233,26 +232,24 @@ const DataTableFilters = ({
                     "ENHANCEMENT",
                     "DOCUMENTATION",
                     "OTHER",
-                    "All",
                   ].map((item) => {
                     const isSelected =
-                      type === item || (item === "All" && type === undefined);
+                      type === item || (item === "None" && type === undefined);
                     return (
                       <CommandItem
+                        className={cn(isSelected ? "bg-accent/70" : "")}
                         key={item}
                         onSelect={() => {
-                          setType(item === "All" ? undefined : (item as Type));
+                          if (type === item) {
+                            setType(undefined);
+                          } else {
+                            setType(item as Type);
+                          }
                           setOpen(true);
                           setView("root");
                         }}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            isSelected ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        {item}
+                        {formatType(item)}
                       </CommandItem>
                     );
                   })}

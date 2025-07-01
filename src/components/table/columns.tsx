@@ -1,4 +1,4 @@
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, CircleUser, MoreHorizontal } from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -31,6 +31,8 @@ import { deletePost } from "@/actions/actions";
 import { useState } from "react";
 import AlertDelete from "../ui/alert-task-delete";
 import formatRole from "@/modules/format-role";
+import { Label } from "../ui/label";
+import formatType from "@/modules/format-type";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -95,7 +97,7 @@ export const columns: ColumnDef<Task>[] = [
     header: "Type",
     cell: ({ row }) => (
       <div>
-        <Badge variant="outline">{row.getValue("type")}</Badge>
+        <Badge variant="outline">{formatType(row.getValue("type"))}</Badge>
       </div>
     ),
   },
@@ -150,14 +152,16 @@ export const columns: ColumnDef<Task>[] = [
         <div>
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant="outline">{author?.name || "Unknown"}</Badge>
+              <Badge variant="outline">
+                <CircleUser className="w-4 h-4" /> {author?.name || "Unknown"}
+              </Badge>
             </TooltipTrigger>
             <TooltipContent>
               <div className="flex flex-col gap-y-2">
+                <Label>Email:</Label>
                 <p>{author?.email}</p>
-                <p className="justify-center flex">
-                  {formatRole(author?.role)}
-                </p>
+                <Label>Role:</Label>
+                <p className="">{formatRole(author?.role)}</p>
               </div>
             </TooltipContent>
           </Tooltip>

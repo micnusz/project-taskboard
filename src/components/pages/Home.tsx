@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Priority, Status, Task, Type } from "../../../prisma/prisma";
+import { useQuery } from "@tanstack/react-query";
+import { Priority, Status, Type } from "../../../prisma/prisma";
 import Form from "../Form";
 import { columns } from "../table/columns";
 import { DataTable } from "../table/data-table";
@@ -48,7 +48,7 @@ const HomeClientPage = () => {
   }, [search, debouncedSetQueryText]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["task", queryText, limit, offset, priority, status, type],
+    queryKey: ["tasks", queryText, limit, offset, priority, status, type],
     queryFn: () => searchTask(queryText, limit, offset, priority, status, type),
     enabled: true,
   });
@@ -81,13 +81,15 @@ const HomeClientPage = () => {
         </DialogContent>
       </Dialog>
       <div>
-        <Input
-          type="text"
-          placeholder="Search items..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="max-w-1/4 px-4 py-4 border rounded mb-2"
-        />
+        <div>
+          <Input
+            type="text"
+            placeholder="Search items..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-1/4 px-4 py-4 border rounded mb-2"
+          />
+        </div>
         <div className="flex flex-row gap-x-2">
           <div>
             <DataTableFilters

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
+import { ChevronsDown, ChevronsRight, ChevronsUp } from "lucide-react";
 import React from "react";
 
 const formatPriority = (priority: string) => {
@@ -10,21 +10,21 @@ const formatPriority = (priority: string) => {
   if (priority === "LOW")
     return (
       <div className="flex items-center gap-1">
-        <ChevronDown className="w-4 h-4" />
+        <ChevronsDown className="w-4 h-4" />
         {formattedText}
       </div>
     );
   if (priority === "MEDIUM")
     return (
       <div className="flex items-center gap-1">
-        <ChevronRight className="w-4 h-4" />
+        <ChevronsRight className="w-4 h-4" />
         {formattedText}
       </div>
     );
   if (priority === "HIGH")
     return (
       <div className="flex items-center gap-1">
-        <ChevronUp className="w-4 h-4" />
+        <ChevronsUp className="w-4 h-4" />
         {formattedText}
       </div>
     );
