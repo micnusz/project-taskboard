@@ -82,7 +82,9 @@ export const searchTask = async (
   searchInput: string,
   limit: number,
   offset: number,
-  priority?: Priority
+  priority?: Priority,
+  status?: Status,
+  type?: Type
 ) => {
   try {
     const tasks = await prisma.task.findMany({
@@ -92,10 +94,16 @@ export const searchTask = async (
           mode: "insensitive",
         },
         priority: priority,
+        status: status,
+        type: type,
+      },
+      include: {
+        author: true,
       },
       skip: offset,
       take: limit,
     });
+
     return tasks;
   } catch (e) {
     console.error("Error searching tasks:", e);

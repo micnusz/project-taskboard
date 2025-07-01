@@ -18,23 +18,34 @@ model User {
   id    String  @id @default(cuid())
   email String  @unique
   name  String?
+  role  Role    @default(USER)
   tasks Task[]
 }
 
 model Task {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  description String?
-  status      Status   @default(TODO)
-  priority    Priority @default(LOW)
-  type        Type     @default(OTHER)
   authorId    String
-  author      User     @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  author      User      @relation(fields: [authorId], references: [id])
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String?
+  status      Status    @default(TODO)
+  priority    Priority  @default(LOW)
+  type        Type      @default(OTHER)
+  deadline    DateTime?
+  reminderAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([slug])
+}
+
+//User role
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+  DEVELOPER
 }
 
 enum Status {

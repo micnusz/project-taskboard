@@ -16,6 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ColumnDef } from "@tanstack/react-table";
 import { Task } from "../../../prisma/prisma";
 import formatStatus from "@/modules/format-status";
@@ -25,6 +30,7 @@ import { formatDate } from "@/modules/format-date";
 import { deletePost } from "@/actions/actions";
 import { useState } from "react";
 import AlertDelete from "../ui/alert-task-delete";
+import formatRole from "@/modules/format-role";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -133,6 +139,30 @@ export const columns: ColumnDef<Task>[] = [
     cell: ({ row }) => {
       const date: Date = row.getValue("createdAt");
       return <div>{formatDate(date)}</div>;
+    },
+  },
+  {
+    accessorKey: "author",
+    header: "Created By",
+    cell: ({ row }) => {
+      const author = row.original.author; // zakładam, że row.original ma cały obiekt Task wraz z author
+      return (
+        <div>
+          <Tooltip>
+            <TooltipTrigger>
+              <Badge variant="outline">{author?.name || "Unknown"}</Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <div className="flex flex-col gap-y-2">
+                <p>{author?.email}</p>
+                <p className="justify-center flex">
+                  {formatRole(author?.role)}
+                </p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      );
     },
   },
 

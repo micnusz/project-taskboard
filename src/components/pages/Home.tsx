@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Task } from "../../../prisma/prisma";
+import { Priority, Status, Task, Type } from "../../../prisma/prisma";
 import Form from "../Form";
 import { columns } from "../table/columns";
 import { DataTable } from "../table/data-table";
@@ -18,14 +18,15 @@ import debounce from "lodash.debounce";
 import { Input } from "../ui/input";
 import DataTablePagination from "../table/data-table-pagination";
 import DataTableFilters from "../table/data-table-filters";
+import { Button } from "../ui/button";
 
 const HomeClientPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [search, setSearch] = useState("");
   const [queryText, setQueryText] = useState("");
-  const [priority, setPriority] = useState();
-  const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
+  const [priority, setPriority] = useState<Priority | undefined>(undefined);
+  const [status, setStatus] = useState<Status | undefined>(undefined);
+  const [type, setType] = useState<Type | undefined>(undefined);
 
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
@@ -47,8 +48,8 @@ const HomeClientPage = () => {
   }, [search, debouncedSetQueryText]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["task", queryText, limit, offset, priority],
-    queryFn: () => searchTask(queryText, limit, offset, priority),
+    queryKey: ["task", queryText, limit, offset, priority, status, type],
+    queryFn: () => searchTask(queryText, limit, offset, priority, status, type),
     enabled: true,
   });
 
@@ -85,9 +86,35 @@ const HomeClientPage = () => {
           placeholder="Search items..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-4 border rounded mb-2"
+          className="max-w-1/4 px-4 py-4 border rounded mb-2"
         />
-        <DataTableFilters priority={priority} setPriority={setPriority} />
+        <div className="flex flex-row gap-x-2">
+          <div>
+            <DataTableFilters
+              priority={priority}
+              setPriority={setPriority}
+              status={status}
+              setStatus={setStatus}
+              type={type}
+              setType={setType}
+            />
+          </div>
+          <div>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="w-full p-2"
+              onClick={() => {
+                setPriority(undefined);
+                setStatus(undefined);
+                setType(undefined);
+                setSearch("");
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </div>
 
         <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
         <DataTablePagination
