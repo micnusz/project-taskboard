@@ -17,6 +17,8 @@ import { Priority, Status, Type } from "../../../prisma/prisma";
 import formatStatus from "@/modules/format-status";
 import formatPriority from "@/modules/format-priority";
 import formatType from "@/modules/format-type";
+import { formatDate } from "@/modules/format-date";
+import { Calendar } from "../ui/calendar";
 
 type DataTableFiltersProps = {
   priority: Priority | undefined;
@@ -25,6 +27,8 @@ type DataTableFiltersProps = {
   setStatus: (value: Status | undefined) => void;
   type: Type | undefined;
   setType: (value: Type | undefined) => void;
+  date: Date | undefined;
+  setDate: (value: Date | undefined) => void;
 };
 
 const DataTableFilters = ({
@@ -34,15 +38,19 @@ const DataTableFilters = ({
   setStatus,
   type,
   setType,
+  date,
+  setDate,
 }: DataTableFiltersProps) => {
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState<"root" | "priority" | "status" | "type">(
-    "root"
-  );
+  const [view, setView] = useState<
+    "root" | "priority" | "status" | "type" | "date"
+  >("root");
 
   const handleBack = () => setView("root");
 
-  const activeFiltersCount = [priority, status, type].filter(Boolean).length;
+  const activeFiltersCount = [priority, status, type, date].filter(
+    Boolean
+  ).length;
 
   const buttonLabel = activeFiltersCount
     ? `Filter By (${activeFiltersCount})`
@@ -72,9 +80,9 @@ const DataTableFilters = ({
           {buttonLabel}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[15rem] rounded-lg shadow-md p-1">
+      <PopoverContent className="min-w-[15rem] w-fit max-w-[20rem] rounded-lg shadow-md p-1">
         <Command>
-          <ScrollArea className="max-h-[24rem] overflow-y-auto">
+          <ScrollArea className="max-h-[30rem] h-fit overflow-y-auto">
             <CommandInput placeholder="Search filters..." />
             <CommandEmpty>No results found.</CommandEmpty>
 
@@ -91,6 +99,9 @@ const DataTableFilters = ({
                   <CommandItem onSelect={() => setView("priority")}>
                     {formatPriority(getPriorityLabel())}
                   </CommandItem>
+                  <CommandItem onSelect={() => setView("date")}>
+                    {date ? `Created At: ${formatDate(date)}` : "Created At"}
+                  </CommandItem>
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
@@ -101,6 +112,7 @@ const DataTableFilters = ({
                       setPriority(undefined);
                       setStatus(undefined);
                       setType(undefined);
+                      setDate(undefined);
                       setOpen(true);
                       setView("root");
                     }}
@@ -115,10 +127,7 @@ const DataTableFilters = ({
             {view === "priority" && (
               <>
                 <CommandGroup>
-                  <CommandItem
-                    className="flex items-center gap-2"
-                    onSelect={handleBack}
-                  >
+                  <CommandItem onSelect={handleBack}>
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
@@ -164,11 +173,8 @@ const DataTableFilters = ({
             {view === "status" && (
               <>
                 <CommandGroup>
-                  <CommandItem
-                    className="flex items-center gap-2"
-                    onSelect={handleBack}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
+                  <CommandItem className="" onSelect={handleBack}>
+                    <ChevronLeft />
                     Back
                   </CommandItem>
                 </CommandGroup>
@@ -217,10 +223,7 @@ const DataTableFilters = ({
             {view === "type" && (
               <>
                 <CommandGroup>
-                  <CommandItem
-                    className="flex items-center gap-2"
-                    onSelect={handleBack}
-                  >
+                  <CommandItem onSelect={handleBack}>
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
@@ -260,6 +263,35 @@ const DataTableFilters = ({
                     size="sm"
                     className="w-full"
                     onClick={() => setType(undefined)}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </>
+            )}
+            {/* DATE VIEW */}
+            {view === "date" && (
+              <>
+                <CommandGroup>
+                  <CommandItem onSelect={handleBack}>
+                    <ChevronLeft className="w-4 h-4" />
+                    Back
+                  </CommandItem>
+                </CommandGroup>
+                <CommandGroup>
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="rounded-lg border"
+                  />
+                </CommandGroup>
+                <div className="border-t p-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setDate(undefined)}
                   >
                     Clear
                   </Button>

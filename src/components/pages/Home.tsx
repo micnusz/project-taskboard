@@ -27,6 +27,7 @@ const HomeClientPage = () => {
   const [priority, setPriority] = useState<Priority | undefined>(undefined);
   const [status, setStatus] = useState<Status | undefined>(undefined);
   const [type, setType] = useState<Type | undefined>(undefined);
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
@@ -48,10 +49,12 @@ const HomeClientPage = () => {
   }, [search, debouncedSetQueryText]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["tasks", queryText, limit, offset, priority, status, type],
-    queryFn: () => searchTask(queryText, limit, offset, priority, status, type),
+    queryKey: ["tasks", queryText, limit, offset, priority, status, type, date],
+    queryFn: () =>
+      searchTask(queryText, limit, offset, priority, status, type, date),
     enabled: true,
   });
+  console.log(date);
 
   //Pagination
   const totalCount = 3980;
@@ -99,6 +102,8 @@ const HomeClientPage = () => {
               setStatus={setStatus}
               type={type}
               setType={setType}
+              date={date}
+              setDate={setDate}
             />
           </div>
           <div>

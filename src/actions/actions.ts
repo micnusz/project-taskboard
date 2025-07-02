@@ -127,8 +127,20 @@ export const searchTask = async (
   offset: number,
   priority?: Priority,
   status?: Status,
-  type?: Type
+  type?: Type,
+  date?: Date
 ) => {
+  let startOfDay: Date | undefined;
+  let endOfDay: Date | undefined;
+
+  if (date) {
+    startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+  }
+
   try {
     const tasks = await prisma.task.findMany({
       where: {
@@ -139,6 +151,12 @@ export const searchTask = async (
         priority: priority,
         status: status,
         type: type,
+        ...(date && {
+          createdAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        }),
       },
       include: {
         author: true,
