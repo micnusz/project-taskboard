@@ -13,6 +13,18 @@ export const getTasks = async () => {
   return tasks;
 };
 
+export const getTask = async (slug: string) => {
+  const tasks = await prisma.task.findUnique({
+    where: {
+      slug: slug,
+    },
+    include: {
+      author: true,
+    },
+  });
+  return tasks;
+};
+
 export const createPost = async (state: any, formData: FormData) => {
   const statusFromForm = formData.get("status") as string;
   const priorityFromForm = formData.get("priority") as string;
@@ -49,15 +61,46 @@ export const createPost = async (state: any, formData: FormData) => {
   }
 };
 
-export const updatePost = async (formData: FormData, id: string) => {
-  await prisma.task.update({
-    where: { id },
-    data: {
-      title: formData.get("title") as string,
-      slug: (formData.get("slug") as string).replace(/\s+/g, "-").toLowerCase(),
-      description: formData.get("content") as string,
-    },
-  });
+//Update Post
+export const updatePost = async (state: any, formData: FormData) => {
+  const id = formData.get("id") as string;
+  const statusFromForm = formData.get("status") as string;
+  const priorityFromForm = formData.get("priority") as string;
+  const typeFromForm = formData.get("type") as string;
+
+  try {
+    await prisma.task.update({
+      where: { id },
+      data: {
+        title: formData.get("title") as string,
+        slug: (formData.get("title") as string)
+          .replace(/\s+/g, "-")
+          .toLowerCase(),
+        description: formData.get("description") as string,
+        status: statusFromForm as Status,
+        priority: priorityFromForm as Priority,
+        type: typeFromForm as Type,
+      },
+    });
+    return { message: "Post updated successfully!", success: true };
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return {
+          message: "A post with this slug already exists.",
+          success: false,
+        };
+      }
+      if (e.code === "P2025") {
+        return {
+          message: "Post not found. Update failed.",
+          success: false,
+        };
+      }
+    }
+
+    return { message: "Something went wrong.", success: false };
+  }
 };
 
 export const deletePost = async (id: string) => {

@@ -27,12 +27,23 @@ import formatStatus from "@/modules/format-status";
 import { Badge } from "../ui/badge";
 import formatPriority from "@/modules/format-priority";
 import { formatDate } from "@/modules/format-date";
-import { deletePost } from "@/actions/actions";
+import { deletePost, updatePost } from "@/actions/actions";
 import { useState } from "react";
 import AlertDelete from "../ui/alert-task-delete";
 import formatRole from "@/modules/format-role";
 import { Label } from "../ui/label";
 import formatType from "@/modules/format-type";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import Form from "../Form";
+import UpdatePost from "../FormUpdate";
+import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -182,9 +193,15 @@ export const columns: ColumnDef<Task>[] = [
         type: "success" | "error";
       } | null>(null);
 
+      const queryClient = useQueryClient();
+
       const handleDelete = async () => {
         const res = await deletePost(id);
         if (res.message === "Task deleted successfully!") {
+          await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+          await queryClient.invalidateQueries({
+            queryKey: ["task", task.id],
+          });
           setAlert({ message: res.message, type: "success" });
         } else {
           setAlert({ message: res.message, type: "error" });
@@ -204,7 +221,24 @@ export const columns: ColumnDef<Task>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href={`/task/${task.slug}`}>View Task</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-start ">
+                      Edit Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="min-h-[20rem] max-h-screen">
+                    <DialogHeader>
+                      <DialogTitle>Edit Task:</DialogTitle>
+                      <UpdatePost task={task} />
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              </DropdownMenuItem>
               <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
                 Delete Task
               </DropdownMenuItem>
