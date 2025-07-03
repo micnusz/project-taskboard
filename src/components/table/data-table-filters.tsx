@@ -53,8 +53,10 @@ const DataTableFilters = ({
     "root" | "priority" | "status" | "type" | "date" | "author"
   >("root");
 
+  //Handle back
   const handleBack = () => setView("root");
 
+  //Filters count
   const activeFiltersCount = [priority, status, type, date, author].filter(
     Boolean
   ).length;
@@ -65,10 +67,9 @@ const DataTableFilters = ({
 
   // Funkcje pomocnicze do wyświetlania etykiety
   const getPriorityLabel = () =>
-    priority ? `Priority: ${priority}` : "Priority";
-  const getStatusLabel = () => (status ? `Status: ${status}` : "Status");
-  const getTypeLabel = () => (type ? `Type: ${type}` : "Type");
-  const getAuthorLabel = () => (author ? `Author: ${author}` : "Author");
+    priority ? `Priority: ${priority}` : "Priority: Any";
+  const getStatusLabel = () => (status ? `Status: ${status}` : "Status: Any");
+  const getTypeLabel = () => (type ? `Type: ${type}` : "Type: Any");
 
   return (
     <Popover
@@ -108,10 +109,14 @@ const DataTableFilters = ({
                     {formatPriority(getPriorityLabel())}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("date")}>
-                    {date ? `Created At: ${formatDate(date)}` : "Created At"}
+                    {date
+                      ? `Created At: ${formatDate(date)}`
+                      : "Created At: Any"}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("author")}>
-                    {getAuthorLabel()}
+                    {author
+                      ? `Created By: ${author.email} `
+                      : "Created By: Any"}
                   </CommandItem>
                 </CommandGroup>
                 <div className="border-t p-2">
@@ -339,8 +344,8 @@ const DataTableFilters = ({
                         }}
                       >
                         <div className="flex flex-row  gap-x-2">
-                          <span>{user.name}</span>
-                          <span>{formatRole(user.role)}</span>
+                          <span>{user?.email}</span>
+                          <span>{formatRole(user?.role)}</span>
                         </div>
                       </CommandItem>
                     );
