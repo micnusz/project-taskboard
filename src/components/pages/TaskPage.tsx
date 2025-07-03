@@ -117,7 +117,7 @@ const TaskPage = ({ slug }: TaskPageProps) => {
             </Label>
             <h3 className="text-xl font-semibold text-foreground">
               <Tooltip>
-                <TooltipTrigger className="flex items-center space-x-1 cursor-pointer hover:text-muted-foreground">
+                <TooltipTrigger className="flex items-center space-x-1 cursor-pointer hover:text-chart-3">
                   <span className="truncate max-w-[150px]">
                     {taskData?.author?.name}
                   </span>

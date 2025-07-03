@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Check, ChevronLeft, Filter } from "lucide-react";
+import { ChevronLeft, Filter } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -13,12 +13,13 @@ import {
 } from "../ui/command";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Priority, Status, Type } from "../../../prisma/prisma";
+import { Priority, Status, Type, User } from "../../../prisma/prisma";
 import formatStatus from "@/modules/format-status";
 import formatPriority from "@/modules/format-priority";
 import formatType from "@/modules/format-type";
 import { formatDate } from "@/modules/format-date";
 import { Calendar } from "../ui/calendar";
+import formatRole from "@/modules/format-role";
 
 type DataTableFiltersProps = {
   priority: Priority | undefined;
@@ -29,6 +30,9 @@ type DataTableFiltersProps = {
   setType: (value: Type | undefined) => void;
   date: Date | undefined;
   setDate: (value: Date | undefined) => void;
+  author: User | undefined;
+  setAuthor: (value: User | undefined) => void;
+  userData: User[];
 };
 
 const DataTableFilters = ({
@@ -40,15 +44,18 @@ const DataTableFilters = ({
   setType,
   date,
   setDate,
+  author,
+  setAuthor,
+  userData,
 }: DataTableFiltersProps) => {
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<
-    "root" | "priority" | "status" | "type" | "date"
+    "root" | "priority" | "status" | "type" | "date" | "author"
   >("root");
 
   const handleBack = () => setView("root");
 
-  const activeFiltersCount = [priority, status, type, date].filter(
+  const activeFiltersCount = [priority, status, type, date, author].filter(
     Boolean
   ).length;
 
@@ -61,6 +68,7 @@ const DataTableFilters = ({
     priority ? `Priority: ${priority}` : "Priority";
   const getStatusLabel = () => (status ? `Status: ${status}` : "Status");
   const getTypeLabel = () => (type ? `Type: ${type}` : "Type");
+  const getAuthorLabel = () => (author ? `Author: ${author}` : "Author");
 
   return (
     <Popover
@@ -102,6 +110,9 @@ const DataTableFilters = ({
                   <CommandItem onSelect={() => setView("date")}>
                     {date ? `Created At: ${formatDate(date)}` : "Created At"}
                   </CommandItem>
+                  <CommandItem onSelect={() => setView("author")}>
+                    {getAuthorLabel()}
+                  </CommandItem>
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
@@ -113,6 +124,7 @@ const DataTableFilters = ({
                       setStatus(undefined);
                       setType(undefined);
                       setDate(undefined);
+                      setAuthor(undefined);
                       setOpen(true);
                       setView("root");
                     }}
@@ -292,6 +304,54 @@ const DataTableFilters = ({
                     size="sm"
                     className="w-full"
                     onClick={() => setDate(undefined)}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </>
+            )}
+            {/* AUTHOR VIEW */}
+            {view === "author" && (
+              <>
+                <CommandGroup>
+                  <CommandItem onSelect={handleBack}>
+                    <ChevronLeft className="w-4 h-4" />
+                    Back
+                  </CommandItem>
+                </CommandGroup>
+                <CommandGroup>
+                  {userData?.map((user) => {
+                    const isSelected =
+                      author === user ||
+                      (user === "None" && author === undefined);
+                    return (
+                      <CommandItem
+                        className={cn(isSelected ? "bg-accent/70" : "")}
+                        key={user.id}
+                        onSelect={() => {
+                          if (author === user) {
+                            setAuthor(undefined);
+                          } else {
+                            setAuthor(user as User);
+                          }
+                          setOpen(true);
+                          setView("root");
+                        }}
+                      >
+                        <div className="flex flex-row  gap-x-2">
+                          <span>{user.name}</span>
+                          <span>{formatRole(user.role)}</span>
+                        </div>
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+                <div className="border-t p-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setType(undefined)}
                   >
                     Clear
                   </Button>

@@ -44,6 +44,7 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     manualFiltering: true,
     manualPagination: true,
+    manualSorting: true,
   });
 
   return (
@@ -69,7 +70,7 @@ export function DataTable<TData, TValue>({
           <TableRow>
             <TableCell colSpan={columns.length} className="p-0">
               <DataTableSkeleton
-                columnCount={8}
+                columnCount={1}
                 cellWidths={[
                   "1rem",
                   "3rem",

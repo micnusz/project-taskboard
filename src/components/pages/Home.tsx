@@ -1,9 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Priority, Status, Type } from "../../../prisma/prisma";
+import { Priority, Status, Type, User } from "../../../prisma/prisma";
 import Form from "../Form";
-import { columns } from "../table/columns";
 import { DataTable } from "../table/data-table";
 import {
   Dialog,
@@ -12,13 +11,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { searchTask } from "@/actions/actions";
+import { getAuthors, searchTask } from "@/actions/actions";
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { Input } from "../ui/input";
 import DataTablePagination from "../table/data-table-pagination";
 import DataTableFilters from "../table/data-table-filters";
 import { Button } from "../ui/button";
+import { getColumns } from "../table/columns";
 
 const HomeClientPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -28,6 +28,14 @@ const HomeClientPage = () => {
   const [status, setStatus] = useState<Status | undefined>(undefined);
   const [type, setType] = useState<Type | undefined>(undefined);
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [author, setAuthor] = useState<User | undefined>(undefined);
+
+  const columns = useMemo(
+    () => getColumns({ sortField, sortOrder, setSortField, setSortOrder }),
+    [sortField, sortOrder]
+  );
 
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
@@ -49,12 +57,40 @@ const HomeClientPage = () => {
   }, [search, debouncedSetQueryText]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["tasks", queryText, limit, offset, priority, status, type, date],
+    queryKey: [
+      "tasks",
+      queryText,
+      limit,
+      offset,
+      priority,
+      status,
+      type,
+      date,
+      sortField,
+      sortOrder,
+      author?.id,
+    ],
     queryFn: () =>
-      searchTask(queryText, limit, offset, priority, status, type, date),
+      searchTask(
+        queryText,
+        limit,
+        offset,
+        priority,
+        status,
+        type,
+        date,
+        sortField,
+        sortOrder,
+        author?.id
+      ),
     enabled: true,
   });
-  console.log(date);
+
+  //Get users
+  const { data: userData, isLoading: isLoadingUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => getAuthors(),
+  });
 
   //Pagination
   const totalCount = 3980;
@@ -96,6 +132,7 @@ const HomeClientPage = () => {
         <div className="flex flex-row gap-x-2">
           <div>
             <DataTableFilters
+              userData={userData}
               priority={priority}
               setPriority={setPriority}
               status={status}
@@ -104,6 +141,8 @@ const HomeClientPage = () => {
               setType={setType}
               date={date}
               setDate={setDate}
+              author={author}
+              setAuthor={setAuthor}
             />
           </div>
           <div>

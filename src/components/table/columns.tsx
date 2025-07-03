@@ -1,4 +1,10 @@
-import { ArrowUpDown, CircleUser, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowUpDown,
+  ChevronDown,
+  CircleUser,
+  MoreHorizontal,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import {
@@ -10,13 +16,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -27,7 +26,7 @@ import formatStatus from "@/modules/format-status";
 import { Badge } from "../ui/badge";
 import formatPriority from "@/modules/format-priority";
 import { formatDate } from "@/modules/format-date";
-import { deletePost, updatePost } from "@/actions/actions";
+import { deletePost } from "@/actions/actions";
 import { useState } from "react";
 import AlertDelete from "../ui/alert-task-delete";
 import formatRole from "@/modules/format-role";
@@ -40,12 +39,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import Form from "../Form";
 import UpdatePost from "../FormUpdate";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 
-export const columns: ColumnDef<Task>[] = [
+export const getColumns = ({
+  sortField,
+  sortOrder,
+  setSortField,
+  setSortOrder,
+}: {
+  sortField: string;
+  sortOrder: "asc" | "desc";
+  setSortField: (field: string) => void;
+  setSortOrder: (order: "asc" | "desc") => void;
+}): ColumnDef<Task>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -70,17 +78,27 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "title" && sortOrder === "asc";
+          setSortField("title");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Title
+        <ChevronDown
+          className={
+            sortField === "title"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("title")}</div>
     ),
@@ -88,12 +106,52 @@ export const columns: ColumnDef<Task>[] = [
 
   {
     accessorKey: "description",
-    header: "Description",
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "description" && sortOrder === "asc";
+          setSortField("description");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Description
+        <ChevronDown
+          className={
+            sortField === "description"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
+    ),
     cell: ({ row }) => <div>{row.getValue("description")}</div>,
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "status" && sortOrder === "asc";
+          setSortField("status");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Status
+        <ChevronDown
+          className={
+            sortField === "status"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
@@ -105,7 +163,27 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "type" && sortOrder === "asc";
+          setSortField("type");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Type
+        <ChevronDown
+          className={
+            sortField === "type"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div>
         <Badge variant="outline">{formatType(row.getValue("type"))}</Badge>
@@ -114,28 +192,26 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => (
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="Priority" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            value="asc"
-          >
-            Asc
-          </SelectItem>
-          <SelectItem
-            onClick={() =>
-              column.toggleSorting(column.getIsSorted() === "desc")
-            }
-            value="desc"
-          >
-            Desc
-          </SelectItem>
-        </SelectContent>
-      </Select>
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "priority" && sortOrder === "asc";
+          setSortField("priority");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Priority
+        <ChevronDown
+          className={
+            sortField === "priority"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
     ),
     cell: ({ row }) => {
       const priority = row.getValue("priority") as string;
@@ -148,7 +224,27 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: () => (
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const isAsc = sortField === "createdAt" && sortOrder === "asc";
+          setSortField("createdAt");
+          setSortOrder(isAsc ? "desc" : "asc");
+        }}
+      >
+        Created At
+        <ChevronDown
+          className={
+            sortField === "createdAt"
+              ? sortOrder === "desc"
+                ? "rotate-180"
+                : ""
+              : "opacity-30"
+          }
+        />
+      </Button>
+    ),
     cell: ({ row }) => {
       const date: Date = row.getValue("createdAt");
       return <div>{formatDate(date)}</div>;

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
-import { Priority, Prisma, Status, Type } from "../../prisma/prisma";
+import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
 
 export const getTasks = async () => {
   const tasks = await prisma.task.findMany({
@@ -23,6 +23,20 @@ export const getTask = async (slug: string) => {
     },
   });
   return tasks;
+};
+
+export const getAuthors = async () => {
+  try {
+    const authors = await prisma.user.findMany({
+      orderBy: {
+        name: "desc",
+      },
+    });
+    return authors;
+  } catch (e) {
+    console.error("Error searching tasks:", e);
+    return [];
+  }
 };
 
 export const createPost = async (state: any, formData: FormData) => {
@@ -128,7 +142,10 @@ export const searchTask = async (
   priority?: Priority,
   status?: Status,
   type?: Type,
-  date?: Date
+  date?: Date,
+  sortField: string = "createdAt",
+  sortOrder: "asc" | "desc" = "desc",
+  authorId?: string
 ) => {
   let startOfDay: Date | undefined;
   let endOfDay: Date | undefined;
@@ -143,6 +160,9 @@ export const searchTask = async (
 
   try {
     const tasks = await prisma.task.findMany({
+      orderBy: {
+        [sortField]: sortOrder,
+      },
       where: {
         description: {
           contains: searchInput,
@@ -151,6 +171,7 @@ export const searchTask = async (
         priority: priority,
         status: status,
         type: type,
+        ...(authorId && { authorId }),
         ...(date && {
           createdAt: {
             gte: startOfDay,
