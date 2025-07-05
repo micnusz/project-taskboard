@@ -2,15 +2,17 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   Table,
   TableBody,
@@ -21,6 +23,18 @@ import {
 } from "@/components/ui/table";
 import React from "react";
 import { DataTableSkeleton } from "./data-table-skeleton";
+import Link from "next/link";
+import UpdatePost from "../FormUpdate";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { deletePost } from "@/actions/actions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +60,20 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     manualSorting: true,
   });
+
+  const queryClient = useQueryClient();
+
+  const handleDelete = async (id: string) => {
+    const res = await deletePost(id);
+    if (res.message === "Task deleted successfully!") {
+      // Odswież listę tasków
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      await queryClient.invalidateQueries({ queryKey: ["task", id] });
+    } else {
+      // Możesz dodać np. toast.error(res.message);
+      console.error(res.message);
+    }
+  };
 
   return (
     <Table className="border-1">
@@ -87,18 +115,52 @@ export function DataTable<TData, TValue>({
             </TableCell>
           </TableRow>
         ) : table.getRowModel().rows.length ? (
-          table.getRowModel().rows.map((row) => (
-            <TableRow
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))
+          table.getRowModel().rows.map((row) => {
+            const slug = (row.original as any).slug;
+            const task = row.original;
+            return (
+              <ContextMenu key={row.id}>
+                <ContextMenuTrigger asChild>
+                  <TableRow data-state={row.getIsSelected() && "selected"}>
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </ContextMenuTrigger>
+                <ContextMenuContent>
+                  <ContextMenuItem>
+                    <Link href={`/task/${slug}`} className="w-full">
+                      View task
+                    </Link>
+                  </ContextMenuItem>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="ghost" className="w-full justify-start">
+                        Edit Task
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="min-h-[20rem] max-h-screen">
+                      <DialogHeader>
+                        <DialogTitle>Edit Task:</DialogTitle>
+                        <UpdatePost task={task} />
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                  <ContextMenuItem
+                    onClick={() => handleDelete(task.id)}
+                    className="w-full justify-start text-red-400"
+                  >
+                    Delete Task
+                  </ContextMenuItem>
+                </ContextMenuContent>
+              </ContextMenu>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">

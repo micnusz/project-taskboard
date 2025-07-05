@@ -28,7 +28,7 @@ const HomeClientPage = () => {
   const [status, setStatus] = useState<Status | undefined>(undefined);
   const [type, setType] = useState<Type | undefined>(undefined);
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [sortField, setSortField] = useState("createdAt");
+  const [sortField, setSortField] = useState<string>("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [author, setAuthor] = useState<User | undefined>(undefined);
 
@@ -48,7 +48,6 @@ const HomeClientPage = () => {
       }, 300),
     []
   );
-
   useEffect(() => {
     debouncedSetQueryText(search);
     return () => {

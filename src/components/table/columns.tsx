@@ -103,7 +103,6 @@ export const getColumns = ({
       <div className="capitalize">{row.getValue("title")}</div>
     ),
   },
-
   {
     accessorKey: "description",
     header: () => (
@@ -127,8 +126,21 @@ export const getColumns = ({
         />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("description")}</div>,
+    cell: ({ row }) => (
+      <div
+        style={{
+          maxWidth: "450px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {row.getValue("description")}
+      </div>
+    ),
+    size: 200,
   },
+
   {
     accessorKey: "status",
     header: () => (

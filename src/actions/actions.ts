@@ -194,6 +194,7 @@ export const deletePost = async (id: string) => {
   }
 };
 
+//Main
 export const searchTask = async (
   searchInput: string,
   limit: number,
@@ -202,14 +203,7 @@ export const searchTask = async (
   status?: Status,
   type?: Type,
   date?: Date,
-  sortField:
-    | "createdAt"
-    | "title"
-    | "priority"
-    | "description"
-    | "type"
-    | "createdBy"
-    | "status" = "createdAt",
+  sortField: string = "createdAt",
   sortOrder: "asc" | "desc" = "desc",
   authorId?: string
 ) => {
