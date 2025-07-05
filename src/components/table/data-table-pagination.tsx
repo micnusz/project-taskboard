@@ -39,7 +39,7 @@ const DataTablePagination = ({
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
           >
-            {[20, 25, 30, 40, 50].map((size) => (
+            {[10, 20, 40, 80].map((size) => (
               <option key={size} value={size}>
                 {size}
               </option>

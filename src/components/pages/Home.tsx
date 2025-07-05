@@ -93,7 +93,7 @@ const HomeClientPage = () => {
   });
 
   //Pagination
-  const totalCount = 3980;
+  const totalCount = 100;
   const pageCount = Math.ceil(totalCount / pagination.pageSize);
 
   function handlePageChange(newPageIndex: number) {
