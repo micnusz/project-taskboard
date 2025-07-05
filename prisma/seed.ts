@@ -238,6 +238,11 @@ export const userData: Prisma.UserCreateInput[] = [
     },
   },
   {
+    name: "Test",
+    email: "test@prisma.io",
+    role: "USER",
+  },
+  {
     name: "Bob",
     email: "bob@prisma.io",
     role: "ADMIN",

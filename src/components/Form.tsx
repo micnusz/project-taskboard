@@ -1,6 +1,6 @@
 "use client";
 
-import { createPost } from "@/actions/actions";
+import { createTask } from "@/actions/actions";
 import { useActionState, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const initialState = { message: "", success: false };
 
 export default function Form() {
-  const [state, formAction, pending] = useActionState(createPost, initialState);
+  const [state, formAction, pending] = useActionState(createTask, initialState);
 
   const [status, setStatus] = useState("");
   const [type, setType] = useState("");

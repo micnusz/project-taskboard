@@ -2,17 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
-import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
+import { Priority, Prisma, Status, Type } from "../../prisma/prisma";
+import { z } from "zod";
 
-export const getTasks = async () => {
-  const tasks = await prisma.task.findMany({
-    orderBy: {
-      title: "desc",
-    },
-  });
-  return tasks;
-};
-
+//For task/[slug]
 export const getTask = async (slug: string) => {
   const tasks = await prisma.task.findUnique({
     where: {
@@ -24,7 +17,7 @@ export const getTask = async (slug: string) => {
   });
   return tasks;
 };
-
+//Getting authors for filters
 export const getAuthors = async () => {
   try {
     const authors = await prisma.user.findMany({
@@ -39,24 +32,56 @@ export const getAuthors = async () => {
   }
 };
 
-export const createPost = async (state: any, formData: FormData) => {
-  const statusFromForm = formData.get("status") as string;
-  const priorityFromForm = formData.get("priority") as string;
-  const typeFromForm = formData.get("type") as string;
+//Zod create task schema
+const createTaskSchema = z.object({
+  title: z
+    .string()
+    .max(100)
+    .refine(async (val) => {
+      const exists = await prisma.task.findUnique({
+        where: { slug: val.toLowerCase().replace(/\s+/g, "-") },
+      });
+      return !exists;
+    }, "Error, A task with this title already exists."),
+  description: z.string().max(1000).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
+  type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
+});
+//Create Task
+export const createTask = async (state: any, formData: FormData) => {
+  const formValues = {
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    status: formData.get("status") as string,
+    priority: formData.get("priority") as string,
+    type: formData.get("type") as string,
+  };
+
+  const parseResult = await createTaskSchema.safeParseAsync(formValues);
+
+  if (!parseResult.success) {
+    const titleError = parseResult.error.flatten().fieldErrors.title?.[0];
+    return {
+      message: titleError || "Validation failed",
+      errors: parseResult.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const { title, description, status, priority, type } = parseResult.data;
 
   try {
     await prisma.task.create({
       data: {
-        title: formData.get("title") as string,
-        slug: (formData.get("title") as string)
-          .replace(/\s+/g, "-")
-          .toLowerCase(),
-        description: formData.get("description") as string,
-        status: statusFromForm as Status,
-        priority: priorityFromForm as Priority,
-        type: typeFromForm as Type,
+        title,
+        slug: title.replace(/\s+/g, "-").toLowerCase(),
+        description,
+        status,
+        priority,
+        type,
         author: {
-          connect: { email: "alice@prisma.io" },
+          connect: { email: "test@prisma.io" },
         },
       },
     });
@@ -70,30 +95,65 @@ export const createPost = async (state: any, formData: FormData) => {
         };
       }
     }
-
     return { message: "Something went wrong.", success: false };
   }
 };
 
+//Zod update task schema
+const updateTaskSchema = z.object({
+  id: z.string(),
+  title: z.string().max(100),
+  description: z.string().max(1000).optional(),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
+  type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
+});
 //Update Post
 export const updatePost = async (state: any, formData: FormData) => {
-  const id = formData.get("id") as string;
-  const statusFromForm = formData.get("status") as string;
-  const priorityFromForm = formData.get("priority") as string;
-  const typeFromForm = formData.get("type") as string;
+  const formValues = {
+    id: formData.get("id") as string,
+    title: formData.get("title") as string,
+    description: formData.get("description") as string,
+    status: formData.get("status") as string,
+    priority: formData.get("priority") as string,
+    type: formData.get("type") as string,
+  };
+
+  const parseResult = await updateTaskSchema.safeParseAsync(formValues);
+
+  if (!parseResult.success) {
+    return {
+      message: "Validation failed",
+      errors: parseResult.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const { id, title, description, status, priority, type } = parseResult.data;
+
+  const slug = title.replace(/\s+/g, "-").toLowerCase();
+
+  const existingTask = await prisma.task.findUnique({
+    where: { slug },
+  });
+
+  if (existingTask && existingTask.id !== id) {
+    return {
+      message: "A task with this title already exists.",
+      success: false,
+    };
+  }
 
   try {
     await prisma.task.update({
       where: { id },
       data: {
-        title: formData.get("title") as string,
-        slug: (formData.get("title") as string)
-          .replace(/\s+/g, "-")
-          .toLowerCase(),
-        description: formData.get("description") as string,
-        status: statusFromForm as Status,
-        priority: priorityFromForm as Priority,
-        type: typeFromForm as Type,
+        title,
+        slug,
+        description,
+        status,
+        priority,
+        type,
       },
     });
     return { message: "Post updated successfully!", success: true };
@@ -112,7 +172,6 @@ export const updatePost = async (state: any, formData: FormData) => {
         };
       }
     }
-
     return { message: "Something went wrong.", success: false };
   }
 };
@@ -143,7 +202,14 @@ export const searchTask = async (
   status?: Status,
   type?: Type,
   date?: Date,
-  sortField: string = "createdAt",
+  sortField:
+    | "createdAt"
+    | "title"
+    | "priority"
+    | "description"
+    | "type"
+    | "createdBy"
+    | "status" = "createdAt",
   sortOrder: "asc" | "desc" = "desc",
   authorId?: string
 ) => {
