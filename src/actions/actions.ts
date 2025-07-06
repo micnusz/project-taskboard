@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
-import { Priority, Prisma, Status, Type } from "../../prisma/prisma";
+import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
 import { z } from "zod";
+import { TaskActionState } from "@/lib/types";
 
 //For task/[slug]
 export const getTask = async (slug: string) => {
@@ -18,7 +19,7 @@ export const getTask = async (slug: string) => {
   return tasks;
 };
 //Getting authors for filters
-export const getAuthors = async () => {
+export const getAuthors = async (): Promise<User[]> => {
   try {
     const authors = await prisma.user.findMany({
       orderBy: {
@@ -27,7 +28,7 @@ export const getAuthors = async () => {
     });
     return authors;
   } catch (e) {
-    console.error("Error searching tasks:", e);
+    console.error("Error fetching authors:", e);
     return [];
   }
 };
@@ -49,7 +50,10 @@ const createTaskSchema = z.object({
   type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
 });
 //Create Task
-export const createTask = async (state: any, formData: FormData) => {
+export const createTask = async (
+  prevState: TaskActionState,
+  formData: FormData
+): Promise<TaskActionState> => {
   const formValues = {
     title: formData.get("title") as string,
     description: formData.get("description") as string,
@@ -61,11 +65,10 @@ export const createTask = async (state: any, formData: FormData) => {
   const parseResult = await createTaskSchema.safeParseAsync(formValues);
 
   if (!parseResult.success) {
-    const titleError = parseResult.error.flatten().fieldErrors.title?.[0];
     return {
-      message: titleError || "Validation failed",
-      errors: parseResult.error.flatten().fieldErrors,
+      message: "Validation failed",
       success: false,
+      errors: parseResult.error.flatten().fieldErrors,
     };
   }
 
@@ -85,16 +88,9 @@ export const createTask = async (state: any, formData: FormData) => {
         },
       },
     });
+
     return { message: "Post created successfully!", success: true };
-  } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      if (e.code === "P2002") {
-        return {
-          message: "A post with this slug already exists.",
-          success: false,
-        };
-      }
-    }
+  } catch {
     return { message: "Something went wrong.", success: false };
   }
 };
@@ -109,7 +105,10 @@ const updateTaskSchema = z.object({
   type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
 });
 //Update Post
-export const updatePost = async (state: any, formData: FormData) => {
+export const updatePost = async (
+  prevState: TaskActionState,
+  formData: FormData
+) => {
   const formValues = {
     id: formData.get("id") as string,
     title: formData.get("title") as string,

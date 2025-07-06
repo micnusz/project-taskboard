@@ -1,9 +1,5 @@
 import {
   Bug,
-  CircleCheck,
-  CircleDashed,
-  CircleX,
-  Clock,
   CopyPlus,
   FileText,
   MoveHorizontal,

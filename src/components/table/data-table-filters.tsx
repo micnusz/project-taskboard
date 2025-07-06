@@ -32,7 +32,7 @@ type DataTableFiltersProps = {
   setDate: (value: Date | undefined) => void;
   author: User | undefined;
   setAuthor: (value: User | undefined) => void;
-  userData: User[];
+  userData: User[] | undefined;
 };
 
 const DataTableFilters = ({
@@ -65,7 +65,7 @@ const DataTableFilters = ({
     ? `Filter By (${activeFiltersCount})`
     : "Filter By";
 
-  // Funkcje pomocnicze do wyświetlania etykiety
+  // Display lable
   const getPriorityLabel = () =>
     priority ? `Priority: ${priority}` : "Priority: Any";
   const getStatusLabel = () => (status ? `Status: ${status}` : "Status: Any");
@@ -84,6 +84,7 @@ const DataTableFilters = ({
         <Button
           variant={activeFiltersCount ? "default" : "outline"}
           className="justify-between"
+          size="sm"
         >
           <Filter className="mr-2 h-4 w-4" />
           {buttonLabel}
@@ -328,7 +329,7 @@ const DataTableFilters = ({
                   {userData?.map((user) => {
                     const isSelected =
                       author === user ||
-                      (user === "None" && author === undefined);
+                      (user === undefined && author === undefined);
                     return (
                       <CommandItem
                         className={cn(isSelected ? "bg-accent/70" : "")}

@@ -22,7 +22,6 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import UpdatePost from "../FormUpdate";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type TaskPageProps = {
@@ -42,11 +41,6 @@ const TaskPage = ({ slug }: TaskPageProps) => {
   if (taskData === undefined) return <Spinner />;
   if (taskData === null) return <div>Task not found.</div>;
 
-  const [alert, setAlert] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
-
   const handleDelete = async () => {
     const res = await deletePost(taskData.id);
 
@@ -55,12 +49,12 @@ const TaskPage = ({ slug }: TaskPageProps) => {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task", taskData.id] });
 
-      setAlert({ message: res.message, type: "success" });
+      console.log({ message: res.message, type: "success" });
 
       // Redirect after invalidation
       router.push("/");
     } else {
-      setAlert({ message: res.message, type: "error" });
+      console.log({ message: res.message, type: "error" });
     }
   };
 

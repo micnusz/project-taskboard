@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Input } from "./ui/input";
+import { TaskActionState } from "@/lib/types";
 
 type UpdatePostProps = {
   task: {
@@ -25,10 +26,17 @@ type UpdatePostProps = {
     type: string;
   };
 };
-const initialState = { message: "", success: false };
+const initialState: TaskActionState = {
+  message: "",
+  success: false,
+  errors: {},
+};
 
 const UpdatePost = ({ task }: UpdatePostProps) => {
-  const [state, formAction, pending] = useActionState(updatePost, initialState);
+  const [state, formAction, pending] = useActionState<
+    TaskActionState,
+    FormData
+  >(updatePost, initialState);
 
   const [status, setStatus] = useState(task.status);
   const [type, setType] = useState(task.type);

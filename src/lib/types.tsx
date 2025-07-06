@@ -1,4 +1,4 @@
-import { Priority, Status, Type } from "../../prisma/prisma";
+import { Priority, Status, Task, Type, User } from "../../prisma/prisma";
 
 export type SearchTaskParams = {
   searchInput: string;
@@ -11,4 +11,20 @@ export type SearchTaskParams = {
   sortField?: "createdAt" | "title" | "priority";
   sortOrder?: "asc" | "desc";
   authorId?: string;
+};
+
+export type TaskWithAuthor = Task & {
+  author: User | null;
+};
+
+export type TaskActionState = {
+  message: string;
+  success: boolean;
+  errors?: {
+    title?: string[];
+    description?: string[];
+    status?: string[];
+    priority?: string[];
+    type?: string[];
+  };
 };

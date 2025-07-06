@@ -32,6 +32,15 @@ const HomeClientPage = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [author, setAuthor] = useState<User | undefined>(undefined);
 
+  //Clear button filter
+  const isFiltered =
+    priority !== undefined ||
+    status !== undefined ||
+    type !== undefined ||
+    date !== undefined ||
+    author !== undefined;
+
+  //Columns
   const columns = useMemo(
     () => getColumns({ sortField, sortOrder, setSortField, setSortOrder }),
     [sortField, sortOrder]
@@ -55,6 +64,7 @@ const HomeClientPage = () => {
     };
   }, [search, debouncedSetQueryText]);
 
+  //Get Tasks
   const { data, isLoading } = useQuery({
     queryKey: [
       "tasks",
@@ -86,7 +96,7 @@ const HomeClientPage = () => {
   });
 
   //Get users
-  const { data: userData, isLoading: isLoadingUsers } = useQuery({
+  const { data: userData } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => getAuthors(),
   });
@@ -94,12 +104,10 @@ const HomeClientPage = () => {
   //Pagination
   const totalCount = 100;
   const pageCount = Math.ceil(totalCount / pagination.pageSize);
-
   function handlePageChange(newPageIndex: number) {
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
   }
-
   function handlePageSizeChange(newPageSize: number) {
     setPagination({ pageIndex: 0, pageSize: newPageSize });
   }
@@ -119,19 +127,19 @@ const HomeClientPage = () => {
         </DialogContent>
       </Dialog>
       <div>
-        <div>
-          <Input
-            type="text"
-            placeholder="Search items..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-1/4 px-4 py-4 border rounded mb-2"
-          />
-        </div>
-        <div className="flex flex-row gap-x-2">
+        <div className="flex flex-col gap-x-2">
           <div>
+            <Input
+              type="text"
+              placeholder="Search items..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="max-w-1/4 px-4 py-4 border rounded mb-2"
+            />
+          </div>
+          <div className="flex flex-row gap-x-2 mb-2">
             <DataTableFilters
-              userData={userData}
+              userData={userData ?? []}
               priority={priority}
               setPriority={setPriority}
               status={status}
@@ -143,21 +151,23 @@ const HomeClientPage = () => {
               author={author}
               setAuthor={setAuthor}
             />
-          </div>
-          <div>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full p-2"
-              onClick={() => {
-                setPriority(undefined);
-                setStatus(undefined);
-                setType(undefined);
-                setSearch("");
-              }}
-            >
-              Clear Filters
-            </Button>
+            <div>
+              <Button
+                variant={isFiltered ? "destructive" : "outline"}
+                className="w-fit"
+                size="sm"
+                onClick={() => {
+                  setPriority(undefined);
+                  setStatus(undefined);
+                  setType(undefined);
+                  setDate(undefined);
+                  setAuthor(undefined);
+                  setSearch("");
+                }}
+              >
+                Clear filters
+              </Button>
+            </div>
           </div>
         </div>
 

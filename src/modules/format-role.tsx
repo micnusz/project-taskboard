@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import React from "react";
+import React, { JSX } from "react";
 
-const formatRole = (role: string) => {
+const formatRole = (role: string): JSX.Element => {
   const formatedRole = role
     .toLowerCase()
     .replace(/_/g, " ")
@@ -13,7 +13,7 @@ const formatRole = (role: string) => {
     return <Badge variant="manager">{formatedRole}</Badge>;
   if (role === "DEVELOPER")
     return <Badge variant="developer">{formatedRole}</Badge>;
-  else return { role };
+  else return <Badge>{formatedRole}</Badge>;
 };
 
 export default formatRole;

@@ -35,13 +35,14 @@ import {
 import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { deletePost } from "@/actions/actions";
+import { Task } from "../../../prisma/prisma";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
 }
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends Task, TValue>({
   columns,
   data,
   isLoading,
@@ -98,7 +99,7 @@ export function DataTable<TData, TValue>({
           <TableRow>
             <TableCell colSpan={columns.length} className="p-0">
               <DataTableSkeleton
-                columnCount={1}
+                columnCount={7}
                 cellWidths={[
                   "1rem",
                   "3rem",
@@ -116,7 +117,7 @@ export function DataTable<TData, TValue>({
           </TableRow>
         ) : table.getRowModel().rows.length ? (
           table.getRowModel().rows.map((row) => {
-            const slug = (row.original as any).slug;
+            const slug = row.original.slug;
             const task = row.original;
             return (
               <ContextMenu key={row.id}>

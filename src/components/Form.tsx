@@ -16,11 +16,19 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useQueryClient } from "@tanstack/react-query";
+import { TaskActionState } from "@/lib/types";
 
-const initialState = { message: "", success: false };
+const initialState: TaskActionState = {
+  message: "",
+  success: false,
+  errors: {},
+};
 
 export default function Form() {
-  const [state, formAction, pending] = useActionState(createTask, initialState);
+  const [state, formAction, pending] = useActionState<
+    TaskActionState,
+    FormData
+  >(createTask, initialState);
 
   const [status, setStatus] = useState("");
   const [type, setType] = useState("");

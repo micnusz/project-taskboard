@@ -1,47 +1,21 @@
-import {
-  ArrowUp,
-  ArrowUpDown,
-  ChevronDown,
-  CircleUser,
-  MoreHorizontal,
-} from "lucide-react";
+import { ChevronDown, CircleUser } from "lucide-react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ColumnDef } from "@tanstack/react-table";
-import { Task } from "../../../prisma/prisma";
 import formatStatus from "@/modules/format-status";
 import { Badge } from "../ui/badge";
 import formatPriority from "@/modules/format-priority";
 import { formatDate } from "@/modules/format-date";
-import { deletePost } from "@/actions/actions";
-import { useState } from "react";
-import AlertDelete from "../ui/alert-task-delete";
+import ActionsCell from "@/actions/ActionsCell";
 import formatRole from "@/modules/format-role";
 import { Label } from "../ui/label";
 import formatType from "@/modules/format-type";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import UpdatePost from "../FormUpdate";
-import Link from "next/link";
-import { useQueryClient } from "@tanstack/react-query";
+import { TaskWithAuthor } from "@/lib/types";
 
 export const getColumns = ({
   sortField,
@@ -53,7 +27,7 @@ export const getColumns = ({
   sortOrder: "asc" | "desc";
   setSortField: (field: string) => void;
   setSortOrder: (order: "asc" | "desc") => void;
-}): ColumnDef<Task>[] => [
+}): ColumnDef<TaskWithAuthor>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -266,7 +240,7 @@ export const getColumns = ({
     accessorKey: "author",
     header: "Created By",
     cell: ({ row }) => {
-      const author = row.original.author; // zakładam, że row.original ma cały obiekt Task wraz z author
+      const author = row.original.author;
       return (
         <div>
           <Tooltip>
@@ -280,7 +254,7 @@ export const getColumns = ({
                 <Label>Email:</Label>
                 <p>{author?.email}</p>
                 <Label>Role:</Label>
-                <p className="">{formatRole(author?.role)}</p>
+                <p>{author?.role ? formatRole(author.role) : "No role"}</p>
               </div>
             </TooltipContent>
           </Tooltip>
@@ -294,66 +268,7 @@ export const getColumns = ({
     enableHiding: false,
     cell: ({ row }) => {
       const task = row.original;
-      const id = task.id;
-
-      const [alert, setAlert] = useState<{
-        message: string;
-        type: "success" | "error";
-      } | null>(null);
-
-      const queryClient = useQueryClient();
-
-      const handleDelete = async () => {
-        const res = await deletePost(id);
-        if (res.message === "Task deleted successfully!") {
-          await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-          await queryClient.invalidateQueries({
-            queryKey: ["task", task.id],
-          });
-          setAlert({ message: res.message, type: "success" });
-        } else {
-          setAlert({ message: res.message, type: "error" });
-        }
-      };
-
-      return (
-        <div>
-          {alert && <AlertDelete message={alert.message} type={alert.type} />}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link href={`/task/${task.slug}`}>View Task</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-start ">
-                      Edit Task
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="min-h-[20rem] max-h-screen">
-                    <DialogHeader>
-                      <DialogTitle>Edit Task:</DialogTitle>
-                      <UpdatePost task={task} />
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
-                Delete Task
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      );
+      return <ActionsCell task={task} />;
     },
   },
 ];
