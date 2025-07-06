@@ -11,6 +11,8 @@ import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
@@ -78,7 +80,7 @@ export function DataTable<TData extends Task, TValue>({
 
   return (
     <Table className="border-1">
-      <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
+      <TableHeader className="sticky top-0 z-10 bg-card shadow-md">
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
@@ -134,6 +136,8 @@ export function DataTable<TData extends Task, TValue>({
                   </TableRow>
                 </ContextMenuTrigger>
                 <ContextMenuContent>
+                  <ContextMenuLabel>Actions</ContextMenuLabel>
+                  <ContextMenuSeparator />
                   <ContextMenuItem>
                     <Link href={`/task/${slug}`} className="w-full">
                       View task

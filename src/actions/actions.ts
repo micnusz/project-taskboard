@@ -223,10 +223,20 @@ export const searchTask = async (
         [sortField]: sortOrder,
       },
       where: {
-        description: {
-          contains: searchInput,
-          mode: "insensitive",
-        },
+        OR: [
+          {
+            description: {
+              contains: searchInput,
+              mode: "insensitive",
+            },
+          },
+          {
+            title: {
+              contains: searchInput,
+              mode: "insensitive",
+            },
+          },
+        ],
         priority: priority,
         status: status,
         type: type,

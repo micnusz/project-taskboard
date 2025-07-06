@@ -3,7 +3,15 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { CalendarSearch, ChevronLeft, Filter } from "lucide-react";
+import {
+  ArrowDownUp,
+  CalendarSearch,
+  ChevronLeft,
+  Filter,
+  Library,
+  LoaderCircle,
+  MoveVertical,
+} from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -65,12 +73,6 @@ const DataTableFilters = ({
     ? `Filter By (${activeFiltersCount})`
     : "Filter By";
 
-  // Display lable
-  const getPriorityLabel = () =>
-    priority ? `Priority: ${priority}` : "Priority: Any";
-  const getStatusLabel = () => (status ? `Status: ${status}` : "Status: Any");
-  const getTypeLabel = () => (type ? `Type: ${type}` : "Type: Any");
-
   return (
     <Popover
       open={open}
@@ -101,21 +103,54 @@ const DataTableFilters = ({
               <>
                 <CommandGroup>
                   <CommandItem onSelect={() => setView("status")}>
-                    {formatStatus(getStatusLabel())}
+                    {status ? (
+                      <>
+                        <LoaderCircle className="text-muted-foreground " />{" "}
+                        Status: {formatStatus(status)}
+                      </>
+                    ) : (
+                      <>
+                        <LoaderCircle className="text-muted-foreground " />
+                        Status
+                      </>
+                    )}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("type")}>
-                    {formatType(getTypeLabel())}
+                    {type ? (
+                      <>
+                        <Library className="text-muted-foreground " /> Type:{" "}
+                        {formatType(type)}
+                      </>
+                    ) : (
+                      <>
+                        <Library className="text-muted-foreground " />
+                        Type
+                      </>
+                    )}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("priority")}>
-                    {formatPriority(getPriorityLabel())}
+                    {priority ? (
+                      <>
+                        <ArrowDownUp className="text-muted-foreground " />{" "}
+                        Priority: {formatPriority(priority)}
+                      </>
+                    ) : (
+                      <>
+                        <ArrowDownUp className="text-muted-foreground " />
+                        Priority
+                      </>
+                    )}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("date")}>
                     {date ? (
-                      `Created At: ${formatDate(date)}`
+                      <>
+                        <CalendarSearch className="text-muted-foreground " />{" "}
+                        Created At: {formatDate(date)}
+                      </>
                     ) : (
                       <>
                         <CalendarSearch className="text-muted-foreground " />
-                        Created At: Any
+                        Created At
                       </>
                     )}
                   </CommandItem>
@@ -150,7 +185,7 @@ const DataTableFilters = ({
             {view === "priority" && (
               <>
                 <CommandGroup>
-                  <CommandItem onSelect={handleBack}>
+                  <CommandItem onSelect={handleBack} className="p-2">
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
@@ -196,7 +231,7 @@ const DataTableFilters = ({
             {view === "status" && (
               <>
                 <CommandGroup>
-                  <CommandItem className="" onSelect={handleBack}>
+                  <CommandItem className="p-2" onSelect={handleBack}>
                     <ChevronLeft />
                     Back
                   </CommandItem>
@@ -246,7 +281,7 @@ const DataTableFilters = ({
             {view === "type" && (
               <>
                 <CommandGroup>
-                  <CommandItem onSelect={handleBack}>
+                  <CommandItem onSelect={handleBack} className="p-2">
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
@@ -296,7 +331,7 @@ const DataTableFilters = ({
             {view === "date" && (
               <>
                 <CommandGroup>
-                  <CommandItem onSelect={handleBack}>
+                  <CommandItem onSelect={handleBack} className="p-2">
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
@@ -325,7 +360,7 @@ const DataTableFilters = ({
             {view === "author" && (
               <>
                 <CommandGroup>
-                  <CommandItem onSelect={handleBack}>
+                  <CommandItem onSelect={handleBack} className="p-2">
                     <ChevronLeft className="w-4 h-4" />
                     Back
                   </CommandItem>
