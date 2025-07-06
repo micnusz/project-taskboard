@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Priority, Status, Type, User } from "../../../prisma/prisma";
 import Form from "../Form";
 import { DataTable } from "../table/data-table";
@@ -92,11 +92,10 @@ const HomeClientPage = () => {
         sortOrder,
         author?.id
       ),
-    enabled: true,
   });
 
   //Get users
-  const { data: userData } = useQuery<User[]>({
+  const { data: userData } = useSuspenseQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => getAuthors(),
   });
@@ -113,19 +112,21 @@ const HomeClientPage = () => {
   }
 
   return (
-    <main className="px-fluid ">
+    <main className="px-fluid py-fluid">
+      {/* 
       <Dialog>
         <DialogTrigger className="border-2 p-2">Add Task</DialogTrigger>
         <DialogContent className="min-h-[20rem] max-h-screen">
           <DialogHeader>
             <DialogTitle>Create Task:</DialogTitle>
             <div>
-              {/* Creating Task */}
+            
               <Form />
             </div>
           </DialogHeader>
         </DialogContent>
       </Dialog>
+       */}
       <div>
         <div className="flex flex-col gap-x-2">
           <div>

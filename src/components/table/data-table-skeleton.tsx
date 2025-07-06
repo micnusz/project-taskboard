@@ -8,6 +8,8 @@ interface DataTableSkeletonProps extends React.ComponentProps<"div"> {
   cellWidths?: string[];
   withPagination?: boolean;
   shrinkZero?: boolean;
+  searchCount?: number;
+  filterCount?: number;
 }
 
 export function DataTableSkeleton({
@@ -16,6 +18,8 @@ export function DataTableSkeleton({
   cellWidths = ["auto"],
   withPagination = false,
   shrinkZero = false,
+  searchCount = 0,
+  filterCount = 0,
   className,
   ...props
 }: DataTableSkeletonProps) {
@@ -32,6 +36,30 @@ export function DataTableSkeleton({
       )}
       {...props}
     >
+      <div className="flex w-full items-center justify-between gap-2 overflow-auto ">
+        <div className="flex flex-1 items-center gap-2">
+          {searchCount > 0
+            ? Array.from({ length: searchCount }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="mt-4 h-[2rem] w-full md:w-[25rem] border-dashed mb-2"
+                />
+              ))
+            : null}
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-between gap-2 overflow-auto">
+        <div className="flex flex-1 items-center gap-2">
+          {filterCount > 0
+            ? Array.from({ length: filterCount }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="w-screen h-[2rem] w-[7rem] border-dashed mb-2"
+                />
+              ))
+            : null}
+        </div>
+      </div>
       <div className="">
         {/* Desktop view (md and up) */}
         <div className="hidden md:block">

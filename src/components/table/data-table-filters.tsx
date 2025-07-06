@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ChevronLeft, Filter } from "lucide-react";
+import { CalendarSearch, ChevronLeft, Filter } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -110,9 +110,14 @@ const DataTableFilters = ({
                     {formatPriority(getPriorityLabel())}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("date")}>
-                    {date
-                      ? `Created At: ${formatDate(date)}`
-                      : "Created At: Any"}
+                    {date ? (
+                      `Created At: ${formatDate(date)}`
+                    ) : (
+                      <>
+                        <CalendarSearch className="text-muted-foreground " />
+                        Created At: Any
+                      </>
+                    )}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("author")}>
                     {author

@@ -1,6 +1,6 @@
 "use server";
 
-import { searchTask } from "@/actions/actions";
+import { getAuthors, searchTask } from "@/actions/actions";
 import HomeClientPage from "@/components/pages/Home";
 import { getQueryClient } from "@/lib/get-query-client";
 import Spinner from "@/lib/Spinner";
@@ -29,6 +29,10 @@ export default async function Home() {
 
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
+    queryKey: ["users"],
+    queryFn: () => getAuthors(),
+  });
+  await queryClient.prefetchQuery({
     queryKey: [
       "tasks",
       queryText,
@@ -40,7 +44,7 @@ export default async function Home() {
       date,
       sortField,
       sortOrder,
-      author?.id,
+      author,
     ],
     queryFn: () =>
       searchTask(
@@ -53,7 +57,7 @@ export default async function Home() {
         date,
         sortField,
         sortOrder,
-        author?.id
+        author
       ),
   });
 

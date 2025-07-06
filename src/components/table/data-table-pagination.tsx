@@ -27,8 +27,8 @@ const DataTablePagination = ({
   canNextPage,
 }: DataTablePaginationProps) => {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex items-center space-x-6 lg:space-x-8">
+    <div className="flex flex-col items-center justify-between py-2 md:flex-row">
+      <div className="flex flex-col md:flex-row items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <label htmlFor="rows-per-page" className="text-sm font-medium">
             Rows per page
