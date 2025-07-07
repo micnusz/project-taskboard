@@ -11,6 +11,7 @@ import {
   Library,
   LoaderCircle,
   MoveVertical,
+  UserSearch,
 } from "lucide-react";
 import {
   Command,
@@ -155,9 +156,17 @@ const DataTableFilters = ({
                     )}
                   </CommandItem>
                   <CommandItem onSelect={() => setView("author")}>
-                    {author
-                      ? `Created By: ${author.email} `
-                      : "Created By: Any"}
+                    {author ? (
+                      <>
+                        <UserSearch className="text-muted-foreground " />{" "}
+                        Created By: {author.email}
+                      </>
+                    ) : (
+                      <>
+                        <UserSearch className="text-muted-foreground " />
+                        Created By
+                      </>
+                    )}
                   </CommandItem>
                 </CommandGroup>
                 <div className="border-t p-2">
