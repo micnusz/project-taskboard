@@ -69,11 +69,9 @@ export function DataTable<TData extends Task, TValue>({
   const handleDelete = async (id: string) => {
     const res = await deletePost(id);
     if (res.message === "Task deleted successfully!") {
-      // Odswież listę tasków
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task", id] });
     } else {
-      // Możesz dodać np. toast.error(res.message);
       console.error(res.message);
     }
   };

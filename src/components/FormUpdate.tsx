@@ -66,10 +66,9 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row flex-wrap gap-2">
         {/* STATUS */}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 ">
           <Label>Status</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger>
@@ -87,7 +86,6 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
           </Select>
           <input type="hidden" name="status" value={status} />
         </div>
-
         {/* TYPE */}
         <div className="flex flex-col gap-y-1">
           <Label>Type</Label>
@@ -108,9 +106,8 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
           </Select>
           <input type="hidden" name="type" value={type} />
         </div>
-
         {/* PRIORITY */}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 ">
           <Label>Priority</Label>
           <Select value={priority} onValueChange={setPriority}>
             <SelectTrigger>

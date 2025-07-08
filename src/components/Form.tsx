@@ -39,7 +39,6 @@ export default function Form() {
   useEffect(() => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task"] }); // dla search
     }
   }, [state.success, queryClient]);
 
@@ -47,12 +46,12 @@ export default function Form() {
     <form action={formAction} className="flex flex-col gap-y-3">
       <div className="flex flex-col gap-y-1">
         <Label>Task</Label>
-        <Input name="title" required placeholder="Task" />
+        <Input name="title" required placeholder="Title..." />
       </div>
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row flex-wrap gap-2">
         {/* STATUS */}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 ">
           <Label>Status</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger>
@@ -61,19 +60,18 @@ export default function Form() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Status</SelectLabel>
-                <SelectItem value="TODO">TODO</SelectItem>
-                <SelectItem value="IN_PROGRESS">IN_PROGRESS</SelectItem>
-                <SelectItem value="DONE">DONE</SelectItem>
-                <SelectItem value="CANCELED">CANCELED</SelectItem>
+                <SelectItem value="TODO">Todo</SelectItem>
+                <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                <SelectItem value="DONE">Done</SelectItem>
+                <SelectItem value="CANCELED">Canceled</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
           {/* Hidden input */}
           <input type="hidden" name="status" value={status} />
         </div>
-
         {/* TYPE */}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 ">
           <Label>Type</Label>
           <Select value={type} onValueChange={setType}>
             <SelectTrigger>
@@ -82,20 +80,19 @@ export default function Form() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Type</SelectLabel>
-                <SelectItem value="BUG">BUG</SelectItem>
-                <SelectItem value="DOCUMENTATION">DOCUMENTATION</SelectItem>
-                <SelectItem value="ENHANCEMENT">ENHANCEMENT</SelectItem>
-                <SelectItem value="FEATURE">FEATURE</SelectItem>
-                <SelectItem value="OTHER">OTHER</SelectItem>
+                <SelectItem value="BUG">Bug</SelectItem>
+                <SelectItem value="DOCUMENTATION">Documentation</SelectItem>
+                <SelectItem value="ENHANCEMENT">Enhancement</SelectItem>
+                <SelectItem value="FEATURE">Feature</SelectItem>
+                <SelectItem value="OTHER">Other</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
           {/* Hidden input */}
           <input type="hidden" name="type" value={type} />
         </div>
-
         {/* PRIORITY */}
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 ">
           <Label>Priority</Label>
           <Select value={priority} onValueChange={setPriority}>
             <SelectTrigger>
@@ -104,9 +101,9 @@ export default function Form() {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Priority</SelectLabel>
-                <SelectItem value="HIGH">HIGH</SelectItem>
-                <SelectItem value="MEDIUM">MEDIUM</SelectItem>
-                <SelectItem value="LOW">LOW</SelectItem>
+                <SelectItem value="HIGH">High</SelectItem>
+                <SelectItem value="MEDIUM">Medium</SelectItem>
+                <SelectItem value="LOW">Low</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -117,10 +114,10 @@ export default function Form() {
 
       <div className="flex flex-col gap-y-1">
         <Label>Description</Label>
-        <Textarea name="description" required placeholder="Description" />
+        <Textarea name="description" required placeholder="Description..." />
       </div>
 
-      <Button disabled={pending} variant="outline">
+      <Button disabled={pending} variant="secondary" className="max-w-1/3">
         Create
       </Button>
       <p>{state.message}</p>

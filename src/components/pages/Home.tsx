@@ -113,20 +113,6 @@ const HomeClientPage = () => {
 
   return (
     <main className="px-fluid py-fluid">
-      {/* 
-      <Dialog>
-        <DialogTrigger className="border-2 p-2">Add Task</DialogTrigger>
-        <DialogContent className="min-h-[20rem] max-h-screen">
-          <DialogHeader>
-            <DialogTitle>Create Task:</DialogTitle>
-            <div>
-            
-              <Form />
-            </div>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-       */}
       <div>
         <div className="flex flex-col gap-x-2">
           <div>
@@ -135,7 +121,7 @@ const HomeClientPage = () => {
               placeholder="Search items..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="max-w-1/4 px-4 py-4 border rounded mb-2"
+              className="w-full md:max-w-1/4 px-4 py-4 border rounded mb-2"
             />
           </div>
           <div className="flex flex-row gap-x-2 mb-2">
@@ -169,9 +155,25 @@ const HomeClientPage = () => {
                 Clear filters
               </Button>
             </div>
+            <div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" variant="outline">
+                    Add Task
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="min-h-[20rem] max-h-screen">
+                  <DialogHeader>
+                    <DialogTitle>Create Task:</DialogTitle>
+                    <div>
+                      <Form />
+                    </div>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
-
         <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
         <DataTablePagination
           pageIndex={pagination.pageIndex}
