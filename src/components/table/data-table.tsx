@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useEffect } from "react";
+import React, { useActionState, useEffect } from "react";
 import { DataTableSkeleton } from "./data-table-skeleton";
 import Link from "next/link";
 import UpdatePost from "../FormUpdate";
@@ -36,11 +36,22 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import { deletePost } from "@/actions/actions";
-import { Task } from "../../../prisma/prisma";
+import { deletePost, updateManyPosts } from "@/actions/actions";
+import { Priority, Status, Task, Type } from "../../../prisma/prisma";
 import { Badge } from "../ui/badge";
 import { X } from "lucide-react";
 import { Separator } from "../ui/separator";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { TaskActionState } from "@/lib/types";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,11 +73,39 @@ export function DataTable<TData extends Task, TValue>({
     manualPagination: true,
     manualSorting: true,
   });
+  const [status, setStatus] = React.useState<Status | "">("");
+  const [priority, setPriority] = React.useState<Priority | "">("");
+  const [type, setType] = React.useState<Type | "">("");
+
+  const initialState: TaskActionState = {
+    message: "",
+    success: false,
+    errors: {},
+  };
+  const [state, formAction, pending] = useActionState<
+    TaskActionState,
+    FormData
+  >(updateManyPosts, initialState);
 
   const queryClient = useQueryClient();
 
+  const handleClear = () => {
+    setStatus("");
+    setPriority("");
+    setType("");
+  };
+
+  useEffect(() => {
+    if (state.success) {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      table.resetRowSelection();
+      handleClear();
+    }
+  }, [state]);
+
   const selectedRows = table.getSelectedRowModel().rows;
   const selectedTask = selectedRows[0]?.original;
+  const selectedIds = selectedRows.map((row) => row.original.id);
 
   const handleDelete = async (id: string) => {
     const res = await deletePost(id);
@@ -77,6 +116,23 @@ export function DataTable<TData extends Task, TValue>({
       console.error(res.message);
     }
   };
+
+  const handleDeleteMany = async (ids: string[]) => {
+    try {
+      for (const id of ids) {
+        const res = await deletePost(id);
+        if (res.message !== "Task deleted successfully!") {
+          console.error(`Failed to delete task ${id}:`, res.message);
+        }
+      }
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      table.resetRowSelection();
+    } catch (error) {
+      console.error("Error deleting tasks:", error);
+    }
+  };
+
+  const isFiltered = status !== "" || priority !== "" || type !== "";
 
   return (
     <div>
@@ -182,7 +238,7 @@ export function DataTable<TData extends Task, TValue>({
       {selectedRows.length === 1 && (
         <div className="mb-2 flex items-center py-2">
           {/* Select count, reset selected */}
-          <div className="flex flex-row gap-x-2 border-1">
+          <div className="flex flex-row gap-x-2 ">
             <div className="flex flex-row items-center">
               <span className="text-sm">Selected: {selectedRows.length}</span>{" "}
               <Button
@@ -194,7 +250,7 @@ export function DataTable<TData extends Task, TValue>({
               </Button>
             </div>
 
-            <Button className="" variant="destructive">
+            <Button variant="outline">
               <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
             </Button>
             <Dialog>
@@ -224,9 +280,118 @@ export function DataTable<TData extends Task, TValue>({
         </div>
       )}
       {selectedRows.length > 1 && (
-        <div className="mb-2 flex items-center gap-2 bg-muted p-2 rounded">
-          <span>{selectedRows.length} selected</span>
-          <Button variant="destructive">Delete Selected</Button>
+        <div className="mb-2 flex items-center py-2">
+          {/* Select count, reset selected */}
+          <div className="flex flex-row gap-x-2 ">
+            <div className="flex flex-row items-center">
+              <span className="text-sm">Selected: {selectedRows.length}</span>{" "}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => table.resetRowSelection()}
+              >
+                <X />
+              </Button>
+            </div>
+            <div className="flex flex-row gap-2">
+              <form
+                action={formAction}
+                className="flex flex-row items-center gap-y-3"
+              >
+                {selectedIds.map((id) => (
+                  <input key={id} type="hidden" name="ids" value={id} />
+                ))}
+                <div className="flex flex-row flex-wrap gap-2">
+                  {/* STATUS */}
+                  <div className="flex flex-col gap-y-1 ">
+                    <Select value={status} onValueChange={setStatus}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="TODO">Todo</SelectItem>
+                          <SelectItem value="IN_PROGRESS">
+                            In Progress
+                          </SelectItem>
+                          <SelectItem value="DONE">Done</SelectItem>
+                          <SelectItem value="CANCELED">Canceled</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <input type="hidden" name="status" value={status} />
+                  </div>
+                  {/* TYPE */}
+                  <div className="flex flex-col gap-y-1">
+                    <Select value={type} onValueChange={setType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Type</SelectLabel>
+                          <SelectItem value="BUG">Bug</SelectItem>
+                          <SelectItem value="DOCUMENTATION">
+                            Documentation
+                          </SelectItem>
+                          <SelectItem value="ENHANCEMENT">
+                            Enhancement
+                          </SelectItem>
+                          <SelectItem value="FEATURE">Feature</SelectItem>
+                          <SelectItem value="OTHER">Other</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <input type="hidden" name="type" value={type} />
+                  </div>
+                  {/* PRIORITY */}
+                  <div className="flex flex-col gap-y-1 ">
+                    <Select value={priority} onValueChange={setPriority}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Priority</SelectLabel>
+                          <SelectItem value="HIGH">High</SelectItem>
+                          <SelectItem value="MEDIUM">Medium</SelectItem>
+                          <SelectItem value="LOW">Low</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <input type="hidden" name="priority" value={priority} />
+                  </div>
+
+                  {isFiltered && (
+                    <div className="flex flex-row gap-x-2">
+                      <Button disabled={pending} variant="default">
+                        Update
+                      </Button>
+                      {/* <p>{state.message}</p> */}
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleClear()}
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </form>
+              {!isFiltered && (
+                <div>
+                  <Button
+                    variant="outline"
+                    className="max-w-[15rem] text-red-400"
+                    onClick={() => handleDeleteMany(selectedIds)}
+                  >
+                    Delete Tasks
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

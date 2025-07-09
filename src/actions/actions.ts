@@ -175,6 +175,74 @@ export const updatePost = async (
   }
 };
 
+//Zod update many schema
+const updateManyTaskSchema = z.object({
+  ids: z.array(z.string()).min(1),
+  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]).optional(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+  type: z
+    .enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"])
+    .optional(),
+});
+
+//Update many
+export const updateManyPosts = async (
+  prevState: TaskActionState,
+  formData: FormData
+) => {
+  const ids = formData.getAll("ids") as string[];
+
+  const rawStatus = formData.get("status");
+  const rawPriority = formData.get("priority");
+  const rawType = formData.get("type");
+
+  const status = rawStatus === "" ? undefined : (rawStatus as string);
+  const priority = rawPriority === "" ? undefined : (rawPriority as string);
+  const type = rawType === "" ? undefined : (rawType as string);
+
+  const parseResult = await updateManyTaskSchema.safeParseAsync({
+    ids,
+    status,
+    priority,
+    type,
+  });
+
+  if (!parseResult.success) {
+    return {
+      message: "Validation failed",
+      errors: parseResult.error.flatten().fieldErrors,
+      success: false,
+    };
+  }
+
+  const {
+    ids: validIds,
+    status: newStatus,
+    priority: newPriority,
+    type: newType,
+  } = parseResult.data;
+
+  try {
+    await prisma.task.updateMany({
+      where: {
+        id: { in: validIds },
+      },
+      data: {
+        ...(newStatus && { status: newStatus }),
+        ...(newPriority && { priority: newPriority }),
+        ...(newType && { type: newType }),
+      },
+    });
+    return { message: "Tasks updated successfully!", success: true };
+  } catch (e) {
+    console.error(e);
+    return {
+      message: "Something went wrong while updating tasks.",
+      success: false,
+    };
+  }
+};
+
 export const deletePost = async (id: string) => {
   try {
     await prisma.task.delete({
