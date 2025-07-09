@@ -42,7 +42,13 @@ const HomeClientPage = () => {
 
   //Columns
   const columns = useMemo(
-    () => getColumns({ sortField, sortOrder, setSortField, setSortOrder }),
+    () =>
+      getColumns({
+        sortField,
+        sortOrder,
+        setSortField,
+        setSortOrder,
+      }),
     [sortField, sortOrder]
   );
 
@@ -139,21 +145,23 @@ const HomeClientPage = () => {
               setAuthor={setAuthor}
             />
             <div>
-              <Button
-                variant={isFiltered ? "destructive" : "outline"}
-                className="w-fit"
-                size="sm"
-                onClick={() => {
-                  setPriority(undefined);
-                  setStatus(undefined);
-                  setType(undefined);
-                  setDate(undefined);
-                  setAuthor(undefined);
-                  setSearch("");
-                }}
-              >
-                Clear filters
-              </Button>
+              {isFiltered && (
+                <Button
+                  className="w-fit"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => {
+                    setPriority(undefined);
+                    setStatus(undefined);
+                    setType(undefined);
+                    setDate(undefined);
+                    setAuthor(undefined);
+                    setSearch("");
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
             </div>
             <div>
               <Dialog>
