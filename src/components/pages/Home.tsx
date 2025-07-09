@@ -182,15 +182,19 @@ const HomeClientPage = () => {
             </div>
           </div>
         </div>
-        <DataTable columns={columns} data={data ?? []} isLoading={isLoading} />
-        <DataTablePagination
-          pageIndex={pagination.pageIndex}
-          pageSize={pagination.pageSize}
-          pageCount={pageCount}
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          canPreviousPage={pagination.pageIndex > 0}
-          canNextPage={pagination.pageIndex + 1 < pageCount}
+        <DataTable
+          columns={columns}
+          data={data ?? []}
+          isLoading={isLoading}
+          pagination={{
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+            pageCount: pageCount,
+            onPageChange: handlePageChange,
+            onPageSizeChange: handlePageSizeChange,
+            canPreviousPage: pagination.pageIndex > 0,
+            canNextPage: pagination.pageIndex + 1 < pageCount,
+          }}
         />
       </div>
     </main>

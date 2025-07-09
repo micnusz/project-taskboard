@@ -52,16 +52,27 @@ import {
   SelectValue,
 } from "../ui/select";
 import { TaskActionState } from "@/lib/types";
+import DataTablePagination from "./data-table-pagination";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
+  pagination: {
+    pageIndex: number;
+    pageSize: number;
+    pageCount: number;
+    onPageChange: (newPageIndex: number) => void;
+    onPageSizeChange: (newPageSize: number) => void;
+    canPreviousPage: boolean;
+    canNextPage: boolean;
+  };
 }
 export function DataTable<TData extends Task, TValue>({
   columns,
   data,
   isLoading,
+  pagination,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     columns,
@@ -235,165 +246,178 @@ export function DataTable<TData extends Task, TValue>({
           )}
         </TableBody>
       </Table>
-      {selectedRows.length === 1 && (
-        <div className="mb-2 flex items-center py-2">
-          {/* Select count, reset selected */}
-          <div className="flex flex-row gap-x-2 ">
-            <div className="flex flex-row items-center">
-              <span className="text-sm">Selected: {selectedRows.length}</span>{" "}
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => table.resetRowSelection()}
-              >
-                <X />
-              </Button>
-            </div>
+      <div className="flex flex-col xl:flex-row gap-x-2 py-2">
+        <div className="flex flex-col xl:flex-row">
+          {selectedRows.length === 1 && (
+            <div className="mb-2 flex items-center ">
+              {/* Select count, reset selected */}
+              <div className="flex flex-row gap-x-2 ">
+                <div className="flex flex-row items-center">
+                  <span className="text-sm">
+                    Selected: {selectedRows.length}
+                  </span>{" "}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => table.resetRowSelection()}
+                  >
+                    <X />
+                  </Button>
+                </div>
 
-            <Button variant="outline">
-              <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
+                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="max-w-[15rem] justify-start "
+                    >
+                      Edit Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="min-h-[20rem] max-h-screen">
+                    <DialogHeader>
+                      <DialogTitle>Edit Task:</DialogTitle>
+                      <UpdatePost task={selectedTask} />
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
                 <Button
                   variant="outline"
-                  className="max-w-[15rem] justify-start "
+                  className="max-w-[15rem] justify-start text-red-400"
+                  onClick={() => handleDelete(selectedTask.id)}
                 >
-                  Edit Task
+                  Delete Task
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="min-h-[20rem] max-h-screen">
-                <DialogHeader>
-                  <DialogTitle>Edit Task:</DialogTitle>
-                  <UpdatePost task={selectedTask} />
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-            <Button
-              variant="outline"
-              className="max-w-[15rem] justify-start text-red-400"
-              onClick={() => handleDelete(selectedTask.id)}
-            >
-              Delete Task
-            </Button>
-          </div>
-        </div>
-      )}
-      {selectedRows.length > 1 && (
-        <div className="mb-2 flex items-center py-2">
-          {/* Select count, reset selected */}
-          <div className="flex flex-row gap-x-2 ">
-            <div className="flex flex-row items-center">
-              <span className="text-sm">Selected: {selectedRows.length}</span>{" "}
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => table.resetRowSelection()}
-              >
-                <X />
-              </Button>
+              </div>
             </div>
-            <div className="flex flex-row gap-2">
-              <form
-                action={formAction}
-                className="flex flex-row items-center gap-y-3"
-              >
-                {selectedIds.map((id) => (
-                  <input key={id} type="hidden" name="ids" value={id} />
-                ))}
-                <div className="flex flex-row flex-wrap gap-2">
-                  {/* STATUS */}
-                  <div className="flex flex-col gap-y-1 ">
-                    <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Status</SelectLabel>
-                          <SelectItem value="TODO">Todo</SelectItem>
-                          <SelectItem value="IN_PROGRESS">
-                            In Progress
-                          </SelectItem>
-                          <SelectItem value="DONE">Done</SelectItem>
-                          <SelectItem value="CANCELED">Canceled</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" name="status" value={status} />
-                  </div>
-                  {/* TYPE */}
-                  <div className="flex flex-col gap-y-1">
-                    <Select value={type} onValueChange={setType}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Type</SelectLabel>
-                          <SelectItem value="BUG">Bug</SelectItem>
-                          <SelectItem value="DOCUMENTATION">
-                            Documentation
-                          </SelectItem>
-                          <SelectItem value="ENHANCEMENT">
-                            Enhancement
-                          </SelectItem>
-                          <SelectItem value="FEATURE">Feature</SelectItem>
-                          <SelectItem value="OTHER">Other</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" name="type" value={type} />
-                  </div>
-                  {/* PRIORITY */}
-                  <div className="flex flex-col gap-y-1 ">
-                    <Select value={priority} onValueChange={setPriority}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a Priority" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Priority</SelectLabel>
-                          <SelectItem value="HIGH">High</SelectItem>
-                          <SelectItem value="MEDIUM">Medium</SelectItem>
-                          <SelectItem value="LOW">Low</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" name="priority" value={priority} />
-                  </div>
+          )}
+        </div>
+        <div className="flex flex-col xl:flex-row">
+          {selectedRows.length > 1 && (
+            <div className="mb-2 flex items-center">
+              {/* Select count, reset selected */}
+              <div className="flex flex-row gap-x-2 ">
+                <div className="flex flex-row items-center">
+                  <span className="text-sm">
+                    Selected: {selectedRows.length}
+                  </span>{" "}
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => table.resetRowSelection()}
+                  >
+                    <X />
+                  </Button>
+                </div>
+                <div className="flex flex-row gap-x-2">
+                  <form
+                    action={formAction}
+                    className="flex flex-row items-center gap-y-3"
+                  >
+                    {selectedIds.map((id) => (
+                      <input key={id} type="hidden" name="ids" value={id} />
+                    ))}
+                    <div className="flex flex-row flex-wrap gap-x-2">
+                      {/* STATUS */}
+                      <div className="flex flex-col gap-y-1 ">
+                        <Select value={status} onValueChange={setStatus}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Status</SelectLabel>
+                              <SelectItem value="TODO">Todo</SelectItem>
+                              <SelectItem value="IN_PROGRESS">
+                                In Progress
+                              </SelectItem>
+                              <SelectItem value="DONE">Done</SelectItem>
+                              <SelectItem value="CANCELED">Canceled</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <input type="hidden" name="status" value={status} />
+                      </div>
+                      {/* TYPE */}
+                      <div className="flex flex-col gap-y-1">
+                        <Select value={type} onValueChange={setType}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Type</SelectLabel>
+                              <SelectItem value="BUG">Bug</SelectItem>
+                              <SelectItem value="DOCUMENTATION">
+                                Documentation
+                              </SelectItem>
+                              <SelectItem value="ENHANCEMENT">
+                                Enhancement
+                              </SelectItem>
+                              <SelectItem value="FEATURE">Feature</SelectItem>
+                              <SelectItem value="OTHER">Other</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <input type="hidden" name="type" value={type} />
+                      </div>
+                      {/* PRIORITY */}
+                      <div className="flex flex-col gap-y-1 ">
+                        <Select value={priority} onValueChange={setPriority}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a Priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Priority</SelectLabel>
+                              <SelectItem value="HIGH">High</SelectItem>
+                              <SelectItem value="MEDIUM">Medium</SelectItem>
+                              <SelectItem value="LOW">Low</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <input type="hidden" name="priority" value={priority} />
+                      </div>
 
-                  {isFiltered && (
-                    <div className="flex flex-row gap-x-2">
-                      <Button disabled={pending} variant="default">
-                        Update
-                      </Button>
-                      {/* <p>{state.message}</p> */}
+                      {isFiltered && (
+                        <div className="flex flex-row gap-x-2">
+                          <Button disabled={pending} variant="default">
+                            Update
+                          </Button>
+                          {/* <p>{state.message}</p> */}
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleClear()}
+                          >
+                            Clear
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </form>
+                  {!isFiltered && (
+                    <div>
                       <Button
-                        variant="destructive"
-                        onClick={() => handleClear()}
+                        variant="outline"
+                        className="max-w-[15rem] text-red-400"
+                        onClick={() => handleDeleteMany(selectedIds)}
                       >
-                        Clear
+                        Delete Tasks
                       </Button>
                     </div>
                   )}
                 </div>
-              </form>
-              {!isFiltered && (
-                <div>
-                  <Button
-                    variant="outline"
-                    className="max-w-[15rem] text-red-400"
-                    onClick={() => handleDeleteMany(selectedIds)}
-                  >
-                    Delete Tasks
-                  </Button>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
-      )}
+        <div className="flex flex-col justify-start xl:flex-row flex-1 xl:justify-end">
+          <DataTablePagination {...pagination} />
+        </div>
+      </div>
     </div>
   );
 }
