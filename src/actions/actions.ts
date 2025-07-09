@@ -198,7 +198,7 @@ export const searchTask = async (
   searchInput: string,
   limit: number,
   offset: number,
-  priority?: Priority,
+  priority?: Priority | undefined,
   status?: Status,
   type?: Type,
   date?: Date,

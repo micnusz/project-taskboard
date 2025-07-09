@@ -121,7 +121,7 @@ const HomeClientPage = () => {
               placeholder="Search items..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full md:max-w-1/4 px-4 py-4 border rounded mb-2"
+              className="w-full md:max-w-1/4 px-4 py-4 border rounded-md mb-2"
             />
           </div>
           <div className="flex flex-row gap-x-2 mb-2">
