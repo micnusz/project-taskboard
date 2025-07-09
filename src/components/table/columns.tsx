@@ -245,7 +245,7 @@ export const getColumns = ({
         <div>
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant="outline">
+              <Badge variant={author?.role?.toLowerCase()}>
                 <CircleUser className="w-4 h-4" /> {author?.name || "Unknown"}
               </Badge>
             </TooltipTrigger>

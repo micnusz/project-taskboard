@@ -38,6 +38,9 @@ import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { deletePost } from "@/actions/actions";
 import { Task } from "../../../prisma/prisma";
+import { Badge } from "../ui/badge";
+import { X } from "lucide-react";
+import { Separator } from "../ui/separator";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -177,9 +180,20 @@ export function DataTable<TData extends Task, TValue>({
         </TableBody>
       </Table>
       {selectedRows.length === 1 && (
-        <div className="mb-2 flex items-center gap-2 bg-muted p-2 rounded">
-          <span>{selectedRows.length} selected</span>
-          <div className="flex flex-row gap-x-2">
+        <div className="mb-2 flex items-center py-2">
+          {/* Select count, reset selected */}
+          <div className="flex flex-row gap-x-2 border-1">
+            <div className="flex flex-row items-center">
+              <span className="text-sm">Selected: {selectedRows.length}</span>{" "}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => table.resetRowSelection()}
+              >
+                <X />
+              </Button>
+            </div>
+
             <Button className="" variant="destructive">
               <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
             </Button>
