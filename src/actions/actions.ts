@@ -44,10 +44,19 @@ const createTaskSchema = z.object({
       });
       return !exists;
     }, "Error, A task with this title already exists."),
-  description: z.string().max(1000).optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
-  type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
+  description: z.string().max(1000),
+  status: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"])
+  ),
+  priority: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.enum(["LOW", "MEDIUM", "HIGH"])
+  ),
+  type: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"])
+  ),
 });
 //Create Task
 export const createTask = async (

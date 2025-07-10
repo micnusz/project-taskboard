@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter, Roboto } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/lib/query-provider";
 import Header from "@/components/layout/Header";
+import ToastContainer from "@/components/ToastContainer";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -24,6 +25,7 @@ export default function RootLayout({
         <QueryProvider>
           <Header />
           {children}
+          <ToastContainer />
         </QueryProvider>
       </body>
     </html>

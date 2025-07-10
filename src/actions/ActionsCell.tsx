@@ -6,8 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -21,10 +19,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import UpdatePost from "@/components/FormUpdate";
-import { ContextMenuItem } from "@/components/ui/context-menu";
 import React from "react";
+import { useToastStore } from "@/lib/toast-store";
 
 export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
+  const addToast = useToastStore((state) => state.addToast);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const queryClient = useQueryClient();
 
@@ -33,9 +32,17 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task", task.id] });
-      // możesz tu dodać jakiś toast lub inny feedback
+      addToast({
+        className: "bg-chart-1",
+        title: "Task deleted successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     } else {
-      // obsłuż błąd
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task deletion failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     }
   };
 

@@ -15,6 +15,7 @@ import {
 } from "./ui/select";
 import { Input } from "./ui/input";
 import { TaskActionState } from "@/lib/types";
+import { useToastStore } from "@/lib/toast-store";
 
 type UpdatePostProps = {
   task: {
@@ -43,6 +44,7 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
   const [priority, setPriority] = useState(task.priority);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+  const addToast = useToastStore((state) => state.addToast);
 
   const queryClient = useQueryClient();
 
@@ -50,6 +52,17 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task"] });
+      addToast({
+        className: "bg-chart-1",
+        title: "Task updated successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
+    } else if (state.errors && Object.keys(state.errors).length > 0) {
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task update failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     }
   }, [state.success, queryClient]);
 

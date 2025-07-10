@@ -17,7 +17,6 @@ import {
 } from "./ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { TaskActionState } from "@/lib/types";
-
 const initialState: TaskActionState = {
   message: "",
   success: false,
@@ -68,7 +67,7 @@ export default function Form() {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <input type="hidden" name="status" value={status} />
+          <Input required type="hidden" name="status" value={status} />
         </div>
         {/* TYPE */}
         <div className="flex flex-col gap-y-1 ">
@@ -89,7 +88,7 @@ export default function Form() {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <input type="hidden" name="type" value={type} />
+          <Input type="hidden" name="type" value={type} />
         </div>
         {/* PRIORITY */}
         <div className="flex flex-col gap-y-1 ">
@@ -108,7 +107,7 @@ export default function Form() {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <input type="hidden" name="priority" value={priority} />
+          <Input type="hidden" name="priority" value={priority} />
         </div>
       </div>
 
@@ -117,8 +116,8 @@ export default function Form() {
         <Textarea name="description" required placeholder="Description..." />
       </div>
 
-      <Button disabled={pending} variant="secondary" className="max-w-1/3">
-        Create
+      <Button disabled={pending} variant="outline" className="max-w-1/3">
+        {pending ? "Pending..." : "Create"}
       </Button>
       <p>{state.message}</p>
     </form>

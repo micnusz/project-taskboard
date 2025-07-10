@@ -50,6 +50,7 @@ import {
 } from "../ui/select";
 import { TaskActionState } from "@/lib/types";
 import DataTablePagination from "./data-table-pagination";
+import { useToastStore } from "@/lib/toast-store";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -85,6 +86,7 @@ export function DataTable<TData extends Task, TValue>({
   const [priority, setPriority] = React.useState<Priority | "">("");
   const [type, setType] = React.useState<Type | "">("");
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const addToast = useToastStore((state) => state.addToast);
 
   const initialState: TaskActionState = {
     message: "",
@@ -98,34 +100,57 @@ export function DataTable<TData extends Task, TValue>({
 
   const queryClient = useQueryClient();
 
+  //Clear filters
   const handleClear = () => {
     setStatus("");
     setPriority("");
     setType("");
   };
 
-  useEffect(() => {
-    if (state.success) {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      table.resetRowSelection();
-      handleClear();
-    }
-  }, [state]);
-
   const selectedRows = table.getSelectedRowModel().rows;
   const selectedTask = selectedRows[0]?.original;
   const selectedIds = selectedRows.map((row) => row.original.id);
 
+  //Update status, priority, type
+  useEffect(() => {
+    if (state.success) {
+      addToast({
+        className: "bg-chart-1",
+        title: "Task updated successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      table.resetRowSelection();
+      handleClear();
+    } else if (state.errors && Object.keys(state.errors).length > 0) {
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task update failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
+    }
+  }, [state.success, state.errors]);
+
+  //Delete one
   const handleDelete = async (id: string) => {
     const res = await deletePost(id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      addToast({
+        className: "bg-chart-1",
+        title: "Task deleted successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
       table.resetRowSelection();
     } else {
-      console.error(res.message);
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task deletion failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     }
   };
-
+  //Delete many
   const handleDeleteMany = async (ids: string[]) => {
     try {
       for (const id of ids) {
@@ -135,9 +160,18 @@ export function DataTable<TData extends Task, TValue>({
         }
       }
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      addToast({
+        className: "bg-chart-1",
+        title: "Task deleted successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
       table.resetRowSelection();
     } catch (error) {
-      console.error("Error deleting tasks:", error);
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task deletion failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     }
   };
 
