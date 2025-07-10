@@ -38,10 +38,7 @@ import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { deletePost, updateManyPosts } from "@/actions/actions";
 import { Priority, Status, Task, Type } from "../../../prisma/prisma";
-import { Badge } from "../ui/badge";
 import { X } from "lucide-react";
-import { Separator } from "../ui/separator";
-import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -87,6 +84,7 @@ export function DataTable<TData extends Task, TValue>({
   const [status, setStatus] = React.useState<Status | "">("");
   const [priority, setPriority] = React.useState<Priority | "">("");
   const [type, setType] = React.useState<Type | "">("");
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const initialState: TaskActionState = {
     message: "",
@@ -204,21 +202,22 @@ export function DataTable<TData extends Task, TValue>({
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent>
-                    <ContextMenuLabel>Actions</ContextMenuLabel>
-                    <ContextMenuSeparator />
                     <ContextMenuItem>
                       <Link href={`/task/${slug}`} className="w-full">
                         View task
                       </Link>
                     </ContextMenuItem>
-                    <Dialog>
+
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
+                        <ContextMenuItem
+                          onSelect={(e) => {
+                            e.preventDefault(); // Zapobiega zamknięciu context menu
+                            setIsDialogOpen(true);
+                          }}
                         >
                           Edit Task
-                        </Button>
+                        </ContextMenuItem>
                       </DialogTrigger>
                       <DialogContent className="min-h-[20rem] max-h-screen">
                         <DialogHeader>
@@ -227,6 +226,7 @@ export function DataTable<TData extends Task, TValue>({
                         </DialogHeader>
                       </DialogContent>
                     </Dialog>
+
                     <ContextMenuItem
                       onClick={() => handleDelete(task.id)}
                       className="w-full justify-start text-red-400"
