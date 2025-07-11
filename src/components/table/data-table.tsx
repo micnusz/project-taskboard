@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { DataTableSkeleton } from "./data-table-skeleton";
 import Link from "next/link";
 import UpdatePost from "../FormUpdate";
@@ -82,10 +82,10 @@ export function DataTable<TData extends Task, TValue>({
     manualPagination: true,
     manualSorting: true,
   });
-  const [status, setStatus] = React.useState<Status | "">("");
-  const [priority, setPriority] = React.useState<Priority | "">("");
-  const [type, setType] = React.useState<Type | "">("");
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [status, setStatus] = useState<Status | "">("");
+  const [priority, setPriority] = useState<Priority | "">("");
+  const [type, setType] = useState<Type | "">("");
+  const [open, setOpen] = useState(false);
   const addToast = useToastStore((state) => state.addToast);
 
   const initialState: TaskActionState = {
@@ -114,22 +114,28 @@ export function DataTable<TData extends Task, TValue>({
   //Update status, priority, type
   useEffect(() => {
     if (state.success) {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       addToast({
         className: "bg-chart-1",
-        title: "Task updated successfully!",
+        title: `${state.message}`,
         description: `At ${new Date().toLocaleString()}`,
       });
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       table.resetRowSelection();
       handleClear();
-    } else if (state.errors && Object.keys(state.errors).length > 0) {
+    } else if (!state.success && state.message) {
+      const fieldErrors = state.errors
+        ? Object.entries(state.errors)
+            .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+            .join(" | ")
+        : "";
+
       addToast({
         className: "bg-destructive",
-        title: "Error: Task update failed!",
-        description: `At ${new Date().toLocaleString()}`,
+        title: `Error: ${state.message}`,
+        description: fieldErrors || `At ${new Date().toLocaleString()}`,
       });
     }
-  }, [state.success, state.errors]);
+  }, [state.success, state.message, state.errors, queryClient]);
 
   //Delete one
   const handleDelete = async (id: string) => {
@@ -145,7 +151,7 @@ export function DataTable<TData extends Task, TValue>({
     } else {
       addToast({
         className: "bg-destructive",
-        title: "Error: Task deletion failed!",
+        title: "Error: Task failed!",
         description: `At ${new Date().toLocaleString()}`,
       });
     }
@@ -155,8 +161,7 @@ export function DataTable<TData extends Task, TValue>({
     try {
       for (const id of ids) {
         const res = await deletePost(id);
-        if (res.message !== "Task deleted successfully!") {
-          console.error(`Failed to delete task ${id}:`, res.message);
+        if (res.message !== "Tasks deleted successfully!") {
         }
       }
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
@@ -169,7 +174,7 @@ export function DataTable<TData extends Task, TValue>({
     } catch (error) {
       addToast({
         className: "bg-destructive",
-        title: "Error: Task deletion failed!",
+        title: "Error: Task failed!",
         description: `At ${new Date().toLocaleString()}`,
       });
     }
@@ -236,36 +241,12 @@ export function DataTable<TData extends Task, TValue>({
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent>
+                    <ContextMenuLabel>Menu</ContextMenuLabel>
+                    <ContextMenuSeparator />
                     <ContextMenuItem>
                       <Link href={`/task/${slug}`} className="w-full">
                         View task
                       </Link>
-                    </ContextMenuItem>
-
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                      <DialogTrigger asChild>
-                        <ContextMenuItem
-                          onSelect={(e) => {
-                            e.preventDefault(); // Zapobiega zamknięciu context menu
-                            setIsDialogOpen(true);
-                          }}
-                        >
-                          Edit Task
-                        </ContextMenuItem>
-                      </DialogTrigger>
-                      <DialogContent className="min-h-[20rem] max-h-screen">
-                        <DialogHeader>
-                          <DialogTitle>Edit Task:</DialogTitle>
-                          <UpdatePost task={task} />
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
-
-                    <ContextMenuItem
-                      onClick={() => handleDelete(task.id)}
-                      className="w-full justify-start text-red-400"
-                    >
-                      Delete Task
                     </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
@@ -302,7 +283,7 @@ export function DataTable<TData extends Task, TValue>({
                 <Button variant="outline">
                   <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
                 </Button>
-                <Dialog>
+                <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button
                       variant="outline"
@@ -314,7 +295,10 @@ export function DataTable<TData extends Task, TValue>({
                   <DialogContent className="min-h-[20rem] max-h-screen">
                     <DialogHeader>
                       <DialogTitle>Edit Task:</DialogTitle>
-                      <UpdatePost task={selectedTask} />
+                      <UpdatePost
+                        task={selectedTask}
+                        onSuccess={() => setOpen(false)}
+                      />
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>

@@ -5,6 +5,7 @@ import prisma from "../lib/prisma";
 import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
 import { z } from "zod";
 import { TaskActionState } from "@/lib/types";
+import { getErrorMessage } from "@/modules/get-error-message";
 
 //For task/[slug]
 export const getTask = async (slug: string) => {
@@ -38,12 +39,17 @@ const createTaskSchema = z.object({
   title: z
     .string()
     .max(100)
-    .refine(async (val) => {
-      const exists = await prisma.task.findUnique({
-        where: { slug: val.toLowerCase().replace(/\s+/g, "-") },
-      });
-      return !exists;
-    }, "Error, A task with this title already exists."),
+    .refine(
+      async (val) => {
+        const exists = await prisma.task.findUnique({
+          where: { slug: val.toLowerCase().replace(/\s+/g, "-") },
+        });
+        return !exists;
+      },
+      {
+        message: "duplicate_title",
+      }
+    ),
   description: z.string().max(1000),
   status: z.preprocess(
     (val) => (val === "" ? undefined : val),
@@ -74,10 +80,12 @@ export const createTask = async (
   const parseResult = await createTaskSchema.safeParseAsync(formValues);
 
   if (!parseResult.success) {
+    const fieldErrors = parseResult.error.flatten().fieldErrors;
+
     return {
-      message: "Validation failed",
+      message: getErrorMessage(fieldErrors),
       success: false,
-      errors: parseResult.error.flatten().fieldErrors,
+      errors: fieldErrors,
     };
   }
 
@@ -98,9 +106,15 @@ export const createTask = async (
       },
     });
 
-    return { message: "Post created successfully!", success: true };
+    return {
+      message: "Post created successfully!",
+      success: true,
+    };
   } catch {
-    return { message: "Something went wrong.", success: false };
+    return {
+      message: "Something went wrong.",
+      success: false,
+    };
   }
 };
 
@@ -193,7 +207,6 @@ const updateManyTaskSchema = z.object({
     .enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"])
     .optional(),
 });
-
 //Update many
 export const updateManyPosts = async (
   prevState: TaskActionState,

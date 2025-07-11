@@ -32,6 +32,8 @@ const HomeClientPage = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [author, setAuthor] = useState<User | undefined>(undefined);
 
+  const [open, setOpen] = useState(false);
+
   //Clear button filter
   const isFiltered =
     priority !== undefined ||
@@ -164,7 +166,7 @@ const HomeClientPage = () => {
               )}
             </div>
             <div>
-              <Dialog>
+              <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button size="sm" variant="outline">
                     Add Task
@@ -174,7 +176,7 @@ const HomeClientPage = () => {
                   <DialogHeader>
                     <DialogTitle>Create Task:</DialogTitle>
                     <div>
-                      <Form />
+                      <Form onSuccess={() => setOpen(false)} />
                     </div>
                   </DialogHeader>
                 </DialogContent>

@@ -27,4 +27,5 @@ export type TaskActionState = {
     priority?: string[];
     type?: string[];
   };
+  timestamp?: number;
 };

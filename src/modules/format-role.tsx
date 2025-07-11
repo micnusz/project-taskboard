@@ -13,7 +13,7 @@ const formatRole = (role: string): JSX.Element => {
     return <Badge variant="manager">{formatedRole}</Badge>;
   if (role === "DEVELOPER")
     return <Badge variant="developer">{formatedRole}</Badge>;
-  else return <Badge>{formatedRole}</Badge>;
+  else return <Badge variant="outline">{formatedRole}</Badge>;
 };
 
 export default formatRole;

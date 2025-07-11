@@ -18,6 +18,7 @@ import { TaskActionState } from "@/lib/types";
 import { useToastStore } from "@/lib/toast-store";
 
 type UpdatePostProps = {
+  onSuccess?: () => void;
   task: {
     id: string;
     title: string;
@@ -33,7 +34,7 @@ const initialState: TaskActionState = {
   errors: {},
 };
 
-const UpdatePost = ({ task }: UpdatePostProps) => {
+const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
   const [state, formAction, pending] = useActionState<
     TaskActionState,
     FormData
@@ -51,20 +52,26 @@ const UpdatePost = ({ task }: UpdatePostProps) => {
   useEffect(() => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task"] });
       addToast({
         className: "bg-chart-1",
-        title: "Task updated successfully!",
+        title: `${state.message}`,
         description: `At ${new Date().toLocaleString()}`,
       });
-    } else if (state.errors && Object.keys(state.errors).length > 0) {
+      onSuccess?.();
+    } else if (!state.success && state.message) {
+      const fieldErrors = state.errors
+        ? Object.entries(state.errors)
+            .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+            .join(" | ")
+        : "";
+
       addToast({
         className: "bg-destructive",
-        title: "Error: Task update failed!",
-        description: `At ${new Date().toLocaleString()}`,
+        title: `Error: ${state.message}`,
+        description: fieldErrors || `At ${new Date().toLocaleString()}`,
       });
     }
-  }, [state.success, queryClient]);
+  }, [state.success, state.message, state.errors, queryClient]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-3">

@@ -17,17 +17,19 @@ import {
 } from "./ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { TaskActionState } from "@/lib/types";
+import { useToastStore } from "@/lib/toast-store";
 const initialState: TaskActionState = {
   message: "",
   success: false,
   errors: {},
 };
 
-export default function Form() {
+export default function Form({ onSuccess }: { onSuccess?: () => void }) {
   const [state, formAction, pending] = useActionState<
     TaskActionState,
     FormData
   >(createTask, initialState);
+  const addToast = useToastStore((state) => state.addToast);
 
   const [status, setStatus] = useState("");
   const [type, setType] = useState("");
@@ -38,8 +40,26 @@ export default function Form() {
   useEffect(() => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      addToast({
+        className: "bg-chart-1",
+        title: `${state.message}`,
+        description: `At ${new Date().toLocaleString()}`,
+      });
+      onSuccess?.();
+    } else if (!state.success && state.message) {
+      const fieldErrors = state.errors
+        ? Object.entries(state.errors)
+            .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+            .join(" | ")
+        : "";
+
+      addToast({
+        className: "bg-destructive",
+        title: `Error: ${state.message}`,
+        description: fieldErrors || `At ${new Date().toLocaleString()}`,
+      });
     }
-  }, [state.success, queryClient]);
+  }, [state.success, state.message, state.errors, queryClient]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-3">
@@ -88,7 +108,7 @@ export default function Form() {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <Input type="hidden" name="type" value={type} />
+          <input required type="hidden" name="type" value={type} />
         </div>
         {/* PRIORITY */}
         <div className="flex flex-col gap-y-1 ">
@@ -107,7 +127,7 @@ export default function Form() {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <Input type="hidden" name="priority" value={priority} />
+          <Input required type="hidden" name="priority" value={priority} />
         </div>
       </div>
 
