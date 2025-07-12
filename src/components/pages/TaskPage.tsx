@@ -1,6 +1,6 @@
 "use client";
 
-import { deletePost, getTask } from "@/actions/actions";
+import { deleteTask, getTask } from "@/actions/actions";
 import Spinner from "@/lib/Spinner";
 import formatPriority from "@/modules/format-priority";
 import formatStatus from "@/modules/format-status";
@@ -42,7 +42,7 @@ const TaskPage = ({ slug }: TaskPageProps) => {
   if (taskData === null) return <div>Task not found.</div>;
 
   const handleDelete = async () => {
-    const res = await deletePost(taskData.id);
+    const res = await deleteTask(taskData.id);
 
     if (res.message === "Task deleted successfully!") {
       // Invalidate task list and task detail before redirect

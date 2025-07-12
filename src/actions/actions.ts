@@ -265,7 +265,8 @@ export const updateManyPosts = async (
   }
 };
 
-export const deletePost = async (id: string) => {
+//Delete Task
+export const deleteTask = async (id: string) => {
   try {
     await prisma.task.delete({
       where: { id },
@@ -349,5 +350,62 @@ export const searchTask = async (
   } catch (e) {
     console.error("Error searching tasks:", e);
     return [];
+  }
+};
+
+//Tasks count
+export const getTaskCount = async (
+  searchInput: string,
+  priority?: Priority,
+  status?: Status,
+  type?: Type,
+  date?: Date,
+  authorId?: string
+) => {
+  let startOfDay: Date | undefined;
+  let endOfDay: Date | undefined;
+
+  if (date) {
+    startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+  }
+
+  try {
+    const count = await prisma.task.count({
+      where: {
+        OR: [
+          {
+            description: {
+              contains: searchInput,
+              mode: "insensitive",
+            },
+          },
+          {
+            title: {
+              contains: searchInput,
+              mode: "insensitive",
+            },
+          },
+        ],
+        priority,
+        status,
+        type,
+        ...(authorId && { authorId }),
+        ...(date && {
+          createdAt: {
+            gte: startOfDay,
+            lt: endOfDay,
+          },
+        }),
+      },
+    });
+
+    return count;
+  } catch (e) {
+    console.error("Error counting tasks:", e);
+    return 0;
   }
 };

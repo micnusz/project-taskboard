@@ -36,7 +36,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import { deletePost, updateManyPosts } from "@/actions/actions";
+import { deleteTask, updateManyPosts } from "@/actions/actions";
 import { Priority, Status, Task, Type } from "../../../prisma/prisma";
 import { X } from "lucide-react";
 import {
@@ -139,7 +139,7 @@ export function DataTable<TData extends Task, TValue>({
 
   //Delete one
   const handleDelete = async (id: string) => {
-    const res = await deletePost(id);
+    const res = await deleteTask(id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       addToast({
@@ -160,7 +160,7 @@ export function DataTable<TData extends Task, TValue>({
   const handleDeleteMany = async (ids: string[]) => {
     try {
       for (const id of ids) {
-        const res = await deletePost(id);
+        const res = await deleteTask(id);
         if (res.message !== "Tasks deleted successfully!") {
         }
       }
@@ -341,7 +341,12 @@ export function DataTable<TData extends Task, TValue>({
                     <div className="flex flex-row flex-wrap gap-x-2">
                       {/* STATUS */}
                       <div className="flex flex-col gap-y-1 ">
-                        <Select value={status} onValueChange={setStatus}>
+                        <Select
+                          value={status}
+                          onValueChange={(value) =>
+                            setStatus(value as Status | "")
+                          }
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select a Status" />
                           </SelectTrigger>
@@ -361,7 +366,10 @@ export function DataTable<TData extends Task, TValue>({
                       </div>
                       {/* TYPE */}
                       <div className="flex flex-col gap-y-1">
-                        <Select value={type} onValueChange={setType}>
+                        <Select
+                          value={type}
+                          onValueChange={(value) => setType(value as Type | "")}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select a Type" />
                           </SelectTrigger>
@@ -384,7 +392,12 @@ export function DataTable<TData extends Task, TValue>({
                       </div>
                       {/* PRIORITY */}
                       <div className="flex flex-col gap-y-1 ">
-                        <Select value={priority} onValueChange={setPriority}>
+                        <Select
+                          value={priority}
+                          onValueChange={(value) =>
+                            setPriority(value as Priority | "")
+                          }
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select a Priority" />
                           </SelectTrigger>

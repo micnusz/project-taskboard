@@ -1,12 +1,12 @@
 "use server";
 
-import { getAuthors, searchTask } from "@/actions/actions";
+import { getTaskCount, getAuthors, searchTask } from "@/actions/actions";
 import HomeClientPage from "@/components/pages/Home";
 import { getQueryClient } from "@/lib/get-query-client";
 import Spinner from "@/lib/Spinner";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
-import React from "react";
+import { Suspense } from "react";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -28,9 +28,15 @@ export default async function Home() {
   const author = undefined;
 
   const queryClient = getQueryClient();
+
   await queryClient.prefetchQuery({
     queryKey: ["users"],
     queryFn: () => getAuthors(),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["task-count", queryText, priority, status, type, date, author],
+    queryFn: () =>
+      getTaskCount(queryText, priority, status, type, date, author),
   });
   await queryClient.prefetchQuery({
     queryKey: [
@@ -63,9 +69,9 @@ export default async function Home() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <React.Suspense fallback={<Spinner />}>
+      <Suspense fallback={<Spinner />}>
         <HomeClientPage />
-      </React.Suspense>
+      </Suspense>
     </HydrationBoundary>
   );
 }

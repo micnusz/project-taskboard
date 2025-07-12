@@ -11,11 +11,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { getAuthors, searchTask } from "@/actions/actions";
+import { getTaskCount, getAuthors, searchTask } from "@/actions/actions";
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { Input } from "../ui/input";
-import DataTablePagination from "../table/data-table-pagination";
 import DataTableFilters from "../table/data-table-filters";
 import { Button } from "../ui/button";
 import { getColumns } from "../table/columns";
@@ -31,46 +30,10 @@ const HomeClientPage = () => {
   const [sortField, setSortField] = useState<string>("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [author, setAuthor] = useState<User | undefined>(undefined);
-
   const [open, setOpen] = useState(false);
-
-  //Clear button filter
-  const isFiltered =
-    priority !== undefined ||
-    status !== undefined ||
-    type !== undefined ||
-    date !== undefined ||
-    author !== undefined;
-
-  //Columns
-  const columns = useMemo(
-    () =>
-      getColumns({
-        sortField,
-        sortOrder,
-        setSortField,
-        setSortOrder,
-      }),
-    [sortField, sortOrder]
-  );
 
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
-
-  //Search bar
-  const debouncedSetQueryText = useMemo(
-    () =>
-      debounce((text: string) => {
-        setQueryText(text);
-      }, 300),
-    []
-  );
-  useEffect(() => {
-    debouncedSetQueryText(search);
-    return () => {
-      debouncedSetQueryText.cancel();
-    };
-  }, [search, debouncedSetQueryText]);
 
   //Get Tasks
   const { data, isLoading } = useQuery({
@@ -101,20 +64,71 @@ const HomeClientPage = () => {
         author?.id
       ),
   });
-
+  //Get Tasks count
+  const { data: tasksCount } = useQuery<number>({
+    queryKey: [
+      "task-count",
+      queryText,
+      priority,
+      status,
+      type,
+      date,
+      author?.id,
+    ],
+    queryFn: () =>
+      getTaskCount(queryText, priority, status, type, date, author?.id),
+  });
   //Get users
-  const { data: userData } = useSuspenseQuery<User[]>({
+  const { data: userData } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => getAuthors(),
   });
 
+  //Clear button filter
+  const isFiltered =
+    priority !== undefined ||
+    status !== undefined ||
+    type !== undefined ||
+    date !== undefined ||
+    author !== undefined;
+
+  //Columns
+  const columns = useMemo(
+    () =>
+      getColumns({
+        sortField,
+        sortOrder,
+        setSortField,
+        setSortOrder,
+      }),
+    [sortField, sortOrder]
+  );
+
+  //Search bar
+  const debouncedSetQueryText = useMemo(
+    () =>
+      debounce((text: string) => {
+        setQueryText(text);
+      }, 300),
+    []
+  );
+  useEffect(() => {
+    debouncedSetQueryText(search);
+    return () => {
+      debouncedSetQueryText.cancel();
+    };
+  }, [search, debouncedSetQueryText]);
+
   //Pagination
-  const totalCount = 100;
-  const pageCount = Math.ceil(totalCount / pagination.pageSize);
+  const totalCount = tasksCount ?? 0;
+  const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize));
+
   function handlePageChange(newPageIndex: number) {
+    if (!pageCount) return;
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
   }
+
   function handlePageSizeChange(newPageSize: number) {
     setPagination({ pageIndex: 0, pageSize: newPageSize });
   }

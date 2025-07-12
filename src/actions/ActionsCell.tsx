@@ -1,7 +1,7 @@
 "use client";
 import { TaskWithAuthor } from "@/lib/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { deletePost } from "./actions";
+import { deleteTask } from "./actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +28,7 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
-    const res = await deletePost(task.id);
+    const res = await deleteTask(task.id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task", task.id] });
