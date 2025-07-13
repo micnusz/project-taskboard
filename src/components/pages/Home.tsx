@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Priority, Status, Type, User } from "../../../prisma/prisma";
 import Form from "../Form";
 import { DataTable } from "../table/data-table";
@@ -84,14 +84,6 @@ const HomeClientPage = () => {
     queryFn: () => getAuthors(),
   });
 
-  //Clear button filter
-  const isFiltered =
-    priority !== undefined ||
-    status !== undefined ||
-    type !== undefined ||
-    date !== undefined ||
-    author !== undefined;
-
   //Columns
   const columns = useMemo(
     () =>
@@ -119,19 +111,27 @@ const HomeClientPage = () => {
     };
   }, [search, debouncedSetQueryText]);
 
+  //Clear button filter
+  const isFiltered =
+    priority !== undefined ||
+    status !== undefined ||
+    type !== undefined ||
+    date !== undefined ||
+    author !== undefined;
+
   //Pagination
   const totalCount = tasksCount ?? 0;
   const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize));
 
-  function handlePageChange(newPageIndex: number) {
+  const handlePageChange = (newPageIndex: number) => {
     if (!pageCount) return;
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
-  }
+  };
 
-  function handlePageSizeChange(newPageSize: number) {
+  const handlePageSizeChange = (newPageSize: number) => {
     setPagination({ pageIndex: 0, pageSize: newPageSize });
-  }
+  };
 
   return (
     <main className="px-fluid py-fluid">

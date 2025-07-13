@@ -52,6 +52,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
   useEffect(() => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["task-count"] });
       addToast({
         className: "bg-chart-1",
         title: `${state.message}`,

@@ -142,6 +142,7 @@ export function DataTable<TData extends Task, TValue>({
     const res = await deleteTask(id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["task-count"] });
       addToast({
         className: "bg-chart-1",
         title: "Task deleted successfully!",
@@ -165,6 +166,8 @@ export function DataTable<TData extends Task, TValue>({
         }
       }
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["task-count"] });
+
       addToast({
         className: "bg-chart-1",
         title: "Task deleted successfully!",

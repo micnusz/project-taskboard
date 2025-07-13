@@ -29,15 +29,20 @@ export default async function Home() {
 
   const queryClient = getQueryClient();
 
+  //Prefetch users
   await queryClient.prefetchQuery({
     queryKey: ["users"],
     queryFn: () => getAuthors(),
   });
+
+  //Prefetch task-count
   await queryClient.prefetchQuery({
     queryKey: ["task-count", queryText, priority, status, type, date, author],
     queryFn: () =>
       getTaskCount(queryText, priority, status, type, date, author),
   });
+
+  //Prefetch tasks
   await queryClient.prefetchQuery({
     queryKey: [
       "tasks",

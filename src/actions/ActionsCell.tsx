@@ -31,7 +31,7 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
     const res = await deleteTask(task.id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      await queryClient.invalidateQueries({ queryKey: ["task", task.id] });
+      queryClient.invalidateQueries({ queryKey: ["task-count"] });
       addToast({
         className: "bg-chart-1",
         title: "Task deleted successfully!",

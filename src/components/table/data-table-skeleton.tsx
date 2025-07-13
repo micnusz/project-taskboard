@@ -42,7 +42,7 @@ export function DataTableSkeleton({
             ? Array.from({ length: searchCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="mt-4 h-[2rem] w-full md:w-[25rem] border-dashed mb-2"
+                  className="h-[2.5rem] w-full md:w-[22rem] border-dashed mb-2"
                 />
               ))
             : null}
@@ -54,7 +54,7 @@ export function DataTableSkeleton({
             ? Array.from({ length: filterCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="w-screen h-[2rem] w-[7rem] border-dashed mb-2"
+                  className="w-screen h-[2rem] w-[6rem] border-dashed mb-2"
                 />
               ))
             : null}
@@ -62,7 +62,7 @@ export function DataTableSkeleton({
       </div>
       <div className="">
         {/* Desktop view (md and up) */}
-        <div className="hidden md:block">
+        <div className="hidden md:block border-1">
           <Table>
             <TableBody>
               {Array.from({ length: rowCount }).map((_, i) => (
