@@ -135,7 +135,14 @@ export function DataTable<TData extends Task, TValue>({
         description: fieldErrors || `At ${new Date().toLocaleString()}`,
       });
     }
-  }, [state.success, state.message, state.errors, queryClient]);
+  }, [
+    state.success,
+    state.message,
+    state.errors,
+    queryClient,
+    addToast,
+    table,
+  ]);
 
   //Delete one
   const handleDelete = async (id: string) => {
@@ -167,14 +174,13 @@ export function DataTable<TData extends Task, TValue>({
       }
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task-count"] });
-
       addToast({
         className: "bg-chart-1",
         title: "Task deleted successfully!",
         description: `At ${new Date().toLocaleString()}`,
       });
       table.resetRowSelection();
-    } catch (error) {
+    } catch {
       addToast({
         className: "bg-destructive",
         title: "Error: Task failed!",
@@ -228,7 +234,6 @@ export function DataTable<TData extends Task, TValue>({
           ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => {
               const slug = row.original.slug;
-              const task = row.original;
               return (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>

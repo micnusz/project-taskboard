@@ -3,9 +3,13 @@
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
 import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
-import { z } from "zod";
 import { TaskActionState } from "@/lib/types";
 import { getErrorMessage } from "@/modules/get-error-message";
+import {
+  createTaskSchema,
+  updateManyTaskSchema,
+  updateTaskSchema,
+} from "./taskSchema";
 
 //For task/[slug]
 export const getTask = async (slug: string) => {
@@ -34,36 +38,6 @@ export const getAuthors = async (): Promise<User[]> => {
   }
 };
 
-//Zod create task schema
-const createTaskSchema = z.object({
-  title: z
-    .string()
-    .max(100)
-    .refine(
-      async (val) => {
-        const exists = await prisma.task.findUnique({
-          where: { slug: val.toLowerCase().replace(/\s+/g, "-") },
-        });
-        return !exists;
-      },
-      {
-        message: "duplicate_title",
-      }
-    ),
-  description: z.string().max(1000),
-  status: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"])
-  ),
-  priority: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.enum(["LOW", "MEDIUM", "HIGH"])
-  ),
-  type: z.preprocess(
-    (val) => (val === "" ? undefined : val),
-    z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"])
-  ),
-});
 //Create Task
 export const createTask = async (
   prevState: TaskActionState,
@@ -77,7 +51,7 @@ export const createTask = async (
     type: formData.get("type") as string,
   };
 
-  const parseResult = await createTaskSchema.safeParseAsync(formValues);
+  const parseResult = createTaskSchema.safeParse(formValues);
 
   if (!parseResult.success) {
     const fieldErrors = parseResult.error.flatten().fieldErrors;
@@ -90,6 +64,22 @@ export const createTask = async (
   }
 
   const { title, description, status, priority, type } = parseResult.data;
+
+  const existingTask = await prisma.task.findUnique({
+    where: {
+      slug: title.replace(/\s+/g, "-").toLowerCase(),
+    },
+  });
+
+  if (existingTask) {
+    return {
+      message: "A task with this title already exists.",
+      success: false,
+      errors: {
+        title: ["duplicate_title"],
+      },
+    };
+  }
 
   try {
     await prisma.task.create({
@@ -118,15 +108,6 @@ export const createTask = async (
   }
 };
 
-//Zod update task schema
-const updateTaskSchema = z.object({
-  id: z.string(),
-  title: z.string().max(100),
-  description: z.string().max(1000).optional(),
-  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
-  type: z.enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"]),
-});
 //Update Post
 export const updatePost = async (
   prevState: TaskActionState,
@@ -198,15 +179,6 @@ export const updatePost = async (
   }
 };
 
-//Zod update many schema
-const updateManyTaskSchema = z.object({
-  ids: z.array(z.string()).min(1),
-  status: z.enum(["TODO", "IN_PROGRESS", "DONE", "CANCELED"]).optional(),
-  priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
-  type: z
-    .enum(["BUG", "FEATURE", "ENHANCEMENT", "DOCUMENTATION", "OTHER"])
-    .optional(),
-});
 //Update many
 export const updateManyPosts = async (
   prevState: TaskActionState,

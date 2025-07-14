@@ -1,5 +1,3 @@
-"use server";
-
 import { getTask } from "@/actions/actions";
 import TaskPage from "@/components/pages/TaskPage";
 import { getQueryClient } from "@/lib/get-query-client";

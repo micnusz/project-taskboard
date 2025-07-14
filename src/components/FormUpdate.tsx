@@ -72,7 +72,14 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
         description: fieldErrors || `At ${new Date().toLocaleString()}`,
       });
     }
-  }, [state.success, state.message, state.errors, queryClient]);
+  }, [
+    state.success,
+    state.message,
+    state.errors,
+    queryClient,
+    addToast,
+    onSuccess,
+  ]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-3">

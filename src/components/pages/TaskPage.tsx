@@ -43,15 +43,9 @@ const TaskPage = ({ slug }: TaskPageProps) => {
 
   const handleDelete = async () => {
     const res = await deleteTask(taskData.id);
-
     if (res.message === "Task deleted successfully!") {
-      // Invalidate task list and task detail before redirect
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task", taskData.id] });
-
-      console.log({ message: res.message, type: "success" });
-
-      // Redirect after invalidation
       router.push("/");
     } else {
       console.log({ message: res.message, type: "error" });

@@ -10,7 +10,6 @@ import {
   Filter,
   Library,
   LoaderCircle,
-  MoveVertical,
   UserSearch,
 } from "lucide-react";
 import {

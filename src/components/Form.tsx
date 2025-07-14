@@ -60,7 +60,14 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
         description: fieldErrors || `At ${new Date().toLocaleString()}`,
       });
     }
-  }, [state.success, state.message, state.errors, queryClient]);
+  }, [
+    state.success,
+    state.message,
+    state.errors,
+    queryClient,
+    onSuccess,
+    addToast,
+  ]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-3">

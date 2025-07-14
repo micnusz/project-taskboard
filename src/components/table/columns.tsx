@@ -241,11 +241,24 @@ export const getColumns = ({
     header: "Created By",
     cell: ({ row }) => {
       const author = row.original.author;
+      const roleVariantMap: Record<
+        string,
+        "user" | "admin" | "developer" | "manager" | "default"
+      > = {
+        user: "user",
+        admin: "admin",
+        developer: "developer",
+        manager: "manager",
+      };
+
+      const role = author?.role?.toLowerCase();
+      const variant = roleVariantMap[role ?? ""] ?? "default";
+
       return (
         <div>
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant={author?.role?.toLowerCase()}>
+              <Badge variant={variant}>
                 <CircleUser className="w-4 h-4" /> {author?.name || "Unknown"}
               </Badge>
             </TooltipTrigger>
