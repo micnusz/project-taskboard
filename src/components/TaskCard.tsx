@@ -67,15 +67,15 @@ const TaskCard = ({ task }: TaskCardProps) => {
         <div className="flex flex-row gap-x-6 gap-y-4 py-4 flex-wrap text-sm">
           <div className="flex flex-col gap-y-1">
             <Label className="label">Status:</Label>
-            <p>{formatStatus(task.status)}</p>
+            <span>{formatStatus(task.status)}</span>
           </div>
           <div className="flex flex-col gap-y-1">
             <Label className="label">Type:</Label>
-            <p>{formatType(task.type)}</p>
+            <span>{formatType(task.type)}</span>
           </div>
           <div className="flex flex-col gap-y-1">
             <Label className="label">Priority:</Label>
-            <p>{formatPriority(task.priority)}</p>
+            <span>{formatPriority(task.priority)}</span>
           </div>
         </div>
         <ScrollArea className="h-60 rounded-md border mb-8">

@@ -81,7 +81,7 @@ const TaskFilter = ({
           variant={activeFiltersCount ? "default" : "muted"}
           className="justify-between"
         >
-          <Filter className="mr-2 h-4 w-4" />
+          <Filter className="h-4 w-4" />
           {buttonLabel}
         </Button>
       </PopoverTrigger>

@@ -1,7 +1,12 @@
 "use client";
 
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { getAuthorInfo, getAuthorTask } from "@/actions/actions";
+import {
+  getAuthorInfo,
+  getAuthorTask,
+  getAuthorTaskCount,
+  getTaskCount,
+} from "@/actions/actions";
 import { AuthorWithTasks, BadgeVariant } from "@/lib/types";
 import TaskCard from "../TaskCard";
 import { useEffect, useMemo, useState } from "react";
@@ -14,7 +19,7 @@ import { Priority, Status, Type } from "../../../prisma/prisma";
 import TaskFilter from "../TaskFilter";
 import debounce from "lodash.debounce";
 import Spinner from "@/lib/Spinner";
-import AuthorSkeleton from "../ui/author-skeleton";
+import DataTablePagination from "../table/data-table-pagination";
 
 type AuthorPageProps = {
   id: string;
@@ -35,18 +40,21 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
 
-  const { data: authorInfo, isLoading: isLoadingInfo } = useSuspenseQuery({
-    queryKey: ["authorInfo", id],
+  //Author info
+  const { data: authorInfo } = useQuery({
+    queryKey: ["author-info", id],
     queryFn: () => getAuthorInfo(id),
   });
-
-  const {
-    data: authorData,
-    isLoading,
-    isFetching,
-  } = useQuery<AuthorWithTasks>({
+  //Task count
+  const { data: tasksCount } = useQuery({
+    queryKey: ["task-count", id, queryText, priority, status, type, date],
+    queryFn: () =>
+      getAuthorTaskCount(id, queryText, priority, status, type, date),
+  });
+  //Author tasks data
+  const { data: authorData, isFetching } = useQuery<AuthorWithTasks>({
     queryKey: [
-      "author",
+      "author-tasks",
       id,
       queryText,
       limit,
@@ -76,15 +84,6 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
     };
   }, [search, debouncedSetQueryText]);
 
-  const filteredTasks = authorData?.tasks.filter((task) => {
-    const query = search.toLowerCase();
-    return (
-      task.id.toLowerCase().includes(query) ||
-      task.title.toLowerCase().includes(query) ||
-      task.description?.toLowerCase().includes(query)
-    );
-  });
-
   //Clear filters
   const handleClear = () => {
     setSearch("");
@@ -107,6 +106,18 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
 
   const role = authorInfo?.role.toLowerCase() as BadgeVariant;
 
+  //Pagination
+  const totalCount = tasksCount ?? 0;
+  const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize));
+  const handlePageChange = (newPageIndex: number) => {
+    if (!pageCount) return;
+    if (newPageIndex < 0 || newPageIndex >= pageCount) return;
+    setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
+  };
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination({ pageIndex: 0, pageSize: newPageSize });
+  };
+
   return (
     <main className="w-screen px-fluid py-fluid flex flex-col md:flex-row">
       <section className="md:w-1/4 pb-6">
@@ -122,10 +133,10 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
               </Badge>
             </h2>
           </div>
-          <h2 className="responsive-h2">
-            <Label className="text-muted-foreground">Email:</Label>
-            {authorInfo?.email}
-          </h2>
+          <div className=" flex flex-col gap-1">
+            <Label className="text-muted-foreground text-md">Email:</Label>
+            <span className="responsive-h2">{authorInfo?.email}</span>
+          </div>
         </div>
       </section>
       <section className="md:w-3/4">
@@ -135,7 +146,7 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border xs:w-full sm:w-[20rem] md:w-[20rem] duration-200 ease-in-out rounded-md border-3 border-input transition-colors hover:border-chart-1"
+            className="w-full md:max-w-1/4 px-4 py-4 border rounded-md mb-2"
           />
           <TaskFilter
             priority={priority}
@@ -159,7 +170,7 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
           {isFetching ? (
             <Spinner />
           ) : authorData?.tasks && authorData.tasks.length > 0 ? (
-            filteredTasks?.map((task) => (
+            authorData.tasks?.map((task) => (
               <div
                 key={task.id}
                 className="flex-1 sm:w-screen min-w-[15rem] md:min-w-[18rem]"
@@ -171,6 +182,15 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
             <p>No tasks found.</p>
           )}
         </div>
+        <DataTablePagination
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          canPreviousPage={pagination.pageIndex > 0}
+          canNextPage={pagination.pageIndex + 1 < pageCount}
+        />
       </section>
     </main>
   );

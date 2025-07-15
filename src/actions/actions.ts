@@ -262,7 +262,7 @@ export const searchTask = async (
   searchInput: string,
   limit: number,
   offset: number,
-  priority?: Priority | undefined,
+  priority?: Priority,
   status?: Status,
   type?: Type,
   date?: Date,
@@ -332,7 +332,7 @@ export const getAuthorTask = async (
   searchInput: string,
   limit: number,
   offset: number,
-  priority?: Priority | undefined,
+  priority?: Priority,
   status?: Status,
   type?: Type,
   date?: Date
@@ -393,6 +393,58 @@ export const getAuthorTask = async (
   }
 
   return author;
+};
+
+//Author/[id]
+export const getAuthorTaskCount = async (
+  id: string,
+  searchInput: string,
+  priority?: Priority,
+  status?: Status,
+  type?: Type,
+  date?: Date
+) => {
+  let startOfDay: Date | undefined;
+  let endOfDay: Date | undefined;
+
+  if (date) {
+    startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+  }
+
+  const count = await prisma.task.count({
+    where: {
+      authorId: id,
+      OR: [
+        {
+          description: {
+            contains: searchInput,
+            mode: "insensitive",
+          },
+        },
+        {
+          title: {
+            contains: searchInput,
+            mode: "insensitive",
+          },
+        },
+      ],
+      priority: priority,
+      status: status,
+      type: type,
+      ...(date && {
+        createdAt: {
+          gte: startOfDay,
+          lt: endOfDay,
+        },
+      }),
+    },
+  });
+
+  return count;
 };
 
 export const getAuthorInfo = async (id: string): Promise<User> => {
