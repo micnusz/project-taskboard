@@ -48,11 +48,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { TaskActionState } from "@/lib/types";
+import { TaskActionState, TaskWithAuthor } from "@/lib/types";
 import DataTablePagination from "./data-table-pagination";
 import { useToastStore } from "@/lib/toast-store";
+import ViewTask from "../ViewTask";
 
-interface DataTableProps<TData extends Task, TValue> {
+interface DataTableProps<TData extends TaskWithAuthor, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isLoading: boolean;
@@ -66,7 +67,7 @@ interface DataTableProps<TData extends Task, TValue> {
     canNextPage: boolean;
   };
 }
-export function DataTable<TData extends Task, TValue>({
+export function DataTable<TData extends TaskWithAuthor, TValue>({
   columns,
   data,
   isLoading,
@@ -106,7 +107,6 @@ export function DataTable<TData extends Task, TValue>({
     setPriority("");
     setType("");
   };
-
   const selectedRows = table.getSelectedRowModel().rows;
   const selectedTask = selectedRows[0]?.original;
   const selectedIds = selectedRows.map((row) => row.original.id);
@@ -233,7 +233,8 @@ export function DataTable<TData extends Task, TValue>({
             </TableRow>
           ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => {
-              const slug = row.original.slug;
+              const task = row.original;
+
               return (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>
@@ -249,12 +250,30 @@ export function DataTable<TData extends Task, TValue>({
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent>
-                    <ContextMenuLabel>Menu</ContextMenuLabel>
+                    <ContextMenuLabel className="text-muted-foreground">
+                      Menu
+                    </ContextMenuLabel>
                     <ContextMenuSeparator />
-                    <ContextMenuItem>
-                      <Link href={`/task/${slug}`} className="w-full">
-                        View task
-                      </Link>
+                    <ContextMenuItem asChild>
+                      {/* View Task */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="p-2 justify-start w-full"
+                          >
+                            View Task
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
+                          <DialogHeader>
+                            <DialogTitle className="text-muted-foreground text-sm">
+                              View Task:
+                            </DialogTitle>
+                          </DialogHeader>
+                          <ViewTask taskData={task} />
+                        </DialogContent>
+                      </Dialog>
                     </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
@@ -273,8 +292,8 @@ export function DataTable<TData extends Task, TValue>({
         <div className="flex flex-col xl:flex-row">
           {selectedRows.length === 1 && (
             <div className="mb-2 flex items-center ">
-              {/* Select count, reset selected */}
               <div className="flex flex-row gap-x-2 ">
+                {/* Select count, reset selected */}
                 <div className="flex flex-row items-center">
                   <span className="text-sm">
                     Selected: {selectedRows.length}
@@ -287,10 +306,26 @@ export function DataTable<TData extends Task, TValue>({
                     <X />
                   </Button>
                 </div>
-
-                <Button variant="outline">
-                  <Link href={`/task/${selectedTask.slug}`}>View Task</Link>
-                </Button>
+                {/* View Task */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="max-w-[15rem] justify-start "
+                    >
+                      View Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
+                    <DialogHeader>
+                      <DialogTitle className="text-muted-foreground text-sm">
+                        View Task:
+                      </DialogTitle>
+                    </DialogHeader>
+                    <ViewTask taskData={selectedTask} />
+                  </DialogContent>
+                </Dialog>
+                {/* Edit Task */}
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button
@@ -310,6 +345,7 @@ export function DataTable<TData extends Task, TValue>({
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
+                {/* Delete Task */}
                 <Button
                   variant="outline"
                   className="max-w-[15rem] justify-start text-red-400"

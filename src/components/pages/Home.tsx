@@ -18,6 +18,7 @@ import { Input } from "../ui/input";
 import DataTableFilters from "../table/data-table-filters";
 import { Button } from "../ui/button";
 import { getColumns } from "../table/columns";
+import { TaskWithAuthor } from "@/lib/types";
 
 const HomeClientPage = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -36,7 +37,7 @@ const HomeClientPage = () => {
   const limit = pagination.pageSize;
 
   //Get Tasks
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<TaskWithAuthor[]>({
     queryKey: [
       "tasks",
       queryText,

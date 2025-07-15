@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
 import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
-import { TaskActionState } from "@/lib/types";
+import { TaskActionState, TaskWithAuthor } from "@/lib/types";
 import { getErrorMessage } from "@/modules/get-error-message";
 import {
   createTaskSchema,
@@ -268,7 +268,7 @@ export const searchTask = async (
   sortField: string = "createdAt",
   sortOrder: "asc" | "desc" = "desc",
   authorId?: string
-) => {
+): Promise<TaskWithAuthor[]> => {
   let startOfDay: Date | undefined;
   let endOfDay: Date | undefined;
 

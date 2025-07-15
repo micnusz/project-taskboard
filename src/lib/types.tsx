@@ -14,7 +14,7 @@ export type SearchTaskParams = {
 };
 
 export type TaskWithAuthor = Task & {
-  author: User | null;
+  author: User;
 };
 
 export type TaskActionState = {

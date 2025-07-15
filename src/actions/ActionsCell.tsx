@@ -6,6 +6,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,7 @@ import {
 import UpdatePost from "@/components/FormUpdate";
 import React from "react";
 import { useToastStore } from "@/lib/toast-store";
+import ViewTask from "@/components/ViewTask";
 
 export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
   const addToast = useToastStore((state) => state.addToast);
@@ -54,21 +57,34 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
           <MoreHorizontal />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Link href={`/task/${task.slug}`}>View Task</Link>
+      <DropdownMenuContent align="end" className="flex flex-col">
+        <DropdownMenuLabel className="text-muted-foreground">
+          Menu
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="p-2 justify-start">
+                View Task
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
+              <DialogHeader>
+                <DialogTitle className="text-muted-foreground text-sm">
+                  View Task:
+                </DialogTitle>
+              </DialogHeader>
+              <ViewTask taskData={task} />
+            </DialogContent>
+          </Dialog>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog>
             <DialogTrigger asChild>
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault(); // Zapobiega zamknięciu menu
-                  setIsDialogOpen(true);
-                }}
-              >
+              <Button variant="ghost" className="p-2 justify-start">
                 Edit Task
-              </DropdownMenuItem>
+              </Button>
             </DialogTrigger>
             <DialogContent className="min-h-[20rem] max-h-screen">
               <DialogHeader>
@@ -78,8 +94,18 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
             </DialogContent>
           </Dialog>
         </DropdownMenuItem>
-        <DropdownMenuItem className="text-red-500" onClick={handleDelete}>
-          Delete Task
+        <DropdownMenuItem asChild>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                className="text-red-400 justify-start p-2"
+                onClick={handleDelete}
+              >
+                Delete Task
+              </Button>
+            </DialogTrigger>
+          </Dialog>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
