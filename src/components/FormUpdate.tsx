@@ -82,7 +82,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
   ]);
 
   return (
-    <form action={formAction} className="flex flex-col gap-y-3">
+    <form action={formAction} className="flex flex-col gap-y-6">
       <input type="hidden" name="id" value={task.id} />
       <div className="flex flex-col gap-y-1">
         <Label>Task</Label>

@@ -37,7 +37,7 @@ import {
 import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { deleteTask, updateManyPosts } from "@/actions/actions";
-import { Priority, Status, Task, Type } from "../../../prisma/prisma";
+import { Priority, Status, Type } from "../../../prisma/prisma";
 import { X } from "lucide-react";
 import {
   Select,
@@ -234,49 +234,102 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
           ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => {
               const task = row.original;
+              const author = task.authorId;
 
               return (
-                <ContextMenu key={row.id}>
-                  <ContextMenuTrigger asChild>
-                    <TableRow data-state={row.getIsSelected() && "selected"}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent>
-                    <ContextMenuLabel className="text-muted-foreground">
-                      Menu
-                    </ContextMenuLabel>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem asChild>
-                      {/* View Task */}
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="p-2 justify-start w-full"
-                          >
-                            View Task
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
-                          <DialogHeader>
-                            <DialogTitle className="text-muted-foreground text-sm">
-                              View Task:
-                            </DialogTitle>
-                          </DialogHeader>
-                          <ViewTask taskData={task} />
-                        </DialogContent>
-                      </Dialog>
-                    </ContextMenuItem>
-                  </ContextMenuContent>
-                </ContextMenu>
+                <>
+                  <ContextMenu key={row.id}>
+                    <ContextMenuTrigger asChild>
+                      <TableRow data-state={row.getIsSelected() && "selected"}>
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent className="max-w-[6rem]">
+                      <ContextMenuLabel className="text-muted-foreground">
+                        Menu
+                      </ContextMenuLabel>
+                      <ContextMenuSeparator />
+                      <ContextMenuItem asChild>
+                        {/* View Task */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="p-2 justify-start w-full"
+                            >
+                              View Task
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
+                            <DialogHeader>
+                              <DialogTitle className="text-muted-foreground text-sm">
+                                View Task:
+                              </DialogTitle>
+                            </DialogHeader>
+                            <ViewTask taskData={task} />
+                          </DialogContent>
+                        </Dialog>
+                      </ContextMenuItem>
+                      <ContextMenuItem asChild>
+                        {/* View Author */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Link href={`/author/${author}`}>
+                              <Button
+                                variant="ghost"
+                                className="p-2 justify-start w-full"
+                              >
+                                View Author
+                              </Button>
+                            </Link>
+                          </DialogTrigger>
+                        </Dialog>
+                      </ContextMenuItem>
+                      <ContextMenuItem asChild>
+                        {/* Edit Task */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="p-2 justify-start w-full"
+                            >
+                              Edit Task
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="min-h-[20rem] max-h-screen">
+                            <DialogHeader>
+                              <DialogTitle className="text-muted-foreground text-sm">
+                                Edit Task:
+                              </DialogTitle>
+                            </DialogHeader>
+                            <UpdatePost task={task} />
+                          </DialogContent>
+                        </Dialog>
+                      </ContextMenuItem>
+                      <ContextMenuItem asChild>
+                        {/* Delete Task */}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="p-2 justify-start w-full text-red-400"
+                              onClick={() => handleDelete(task.id)}
+                            >
+                              Delete Task
+                            </Button>
+                          </DialogTrigger>
+                        </Dialog>
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </>
               );
             })
           ) : (
@@ -288,6 +341,7 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
           )}
         </TableBody>
       </Table>
+
       <div className="flex flex-col xl:flex-row gap-x-2 py-2">
         <div className="flex flex-col xl:flex-row">
           {selectedRows.length === 1 && (

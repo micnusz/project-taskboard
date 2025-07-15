@@ -24,28 +24,6 @@ export const getTask = async (slug: string) => {
   return tasks;
 };
 
-//Author/[id]
-export const getAuthor = async (id: string): Promise<AuthorWithTasks> => {
-  const author = await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      tasks: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
-
-  if (!author) {
-    throw new Error("Author not found");
-  }
-
-  return author;
-};
-
 //Getting authors for filters
 export const getAuthors = async (): Promise<User[]> => {
   try {
@@ -346,6 +324,87 @@ export const searchTask = async (
     console.error("Error searching tasks:", e);
     return [];
   }
+};
+
+//Author/[id]
+export const getAuthorTask = async (
+  id: string,
+  searchInput: string,
+  limit: number,
+  offset: number,
+  priority?: Priority | undefined,
+  status?: Status,
+  type?: Type,
+  date?: Date
+): Promise<AuthorWithTasks> => {
+  let startOfDay: Date | undefined;
+  let endOfDay: Date | undefined;
+
+  if (date) {
+    startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+  }
+
+  const author = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      tasks: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          OR: [
+            {
+              description: {
+                contains: searchInput,
+                mode: "insensitive",
+              },
+            },
+            {
+              title: {
+                contains: searchInput,
+                mode: "insensitive",
+              },
+            },
+          ],
+          priority: priority,
+          status: status,
+          type: type,
+          ...(date && {
+            createdAt: {
+              gte: startOfDay,
+              lt: endOfDay,
+            },
+          }),
+        },
+        skip: offset,
+        take: limit,
+      },
+    },
+  });
+
+  if (!author) {
+    throw new Error("Author not found");
+  }
+
+  return author;
+};
+
+export const getAuthorInfo = async (id: string): Promise<User> => {
+  const author = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (!author) {
+    throw new Error("Author not found");
+  }
+
+  return author;
 };
 
 //Tasks count

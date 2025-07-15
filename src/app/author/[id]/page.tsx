@@ -1,4 +1,4 @@
-import { getAuthor } from "@/actions/actions";
+import { getAuthorTask } from "@/actions/actions";
 import AuthorPage from "@/components/pages/AuthorPage";
 import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ const TaskServerPage = async ({ params }: TaskServerPageProps) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["author", id],
-    queryFn: () => getAuthor(id),
+    queryFn: () => getAuthorTask(id),
   });
 
   return (
