@@ -21,6 +21,18 @@ export type AuthorWithTasks = User & {
   tasks: Task[];
 };
 
+export type BadgeVariant =
+  | "default"
+  | "user"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "admin"
+  | "developer"
+  | "manager"
+  | null
+  | undefined;
+
 export type TaskActionState = {
   message: string;
   success: boolean;

@@ -129,3 +129,25 @@
   font-size: small;
   
 }
+
+.responsive-user {
+  width: clamp(8rem, 15vw, 20rem);
+  height: clamp(8rem, 15vw, 20rem);
+  border-radius: 50%;
+  border: 6px solid var(--muted-foreground);
+}
+
+.responsive-h1 {
+  font-weight: 800; 
+  font-size: clamp(1.5rem, 5vw, 2.25rem);
+  letter-spacing: -0.025em;
+  scroll-margin-top: 5rem; 
+
+}
+
+.responsive-h2 {
+  scroll-margin-top: 5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-size: clamp(1rem, 4vw, 1.25rem);
+}

@@ -31,7 +31,11 @@ export const getAuthor = async (id: string): Promise<AuthorWithTasks> => {
       id: id,
     },
     include: {
-      tasks: true,
+      tasks: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
   });
 

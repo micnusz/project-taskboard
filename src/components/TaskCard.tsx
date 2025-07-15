@@ -56,7 +56,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
   };
 
   return (
-    <Card className="w-[25rem]">
+    <Card className="w-full h-full flex flex-col ">
       <CardHeader>
         <CardTitle>{task.title}</CardTitle>
         <CardAction className="text-muted-foreground text-sm">
@@ -64,7 +64,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
         </CardAction>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-row gap-x-6 py-4 text-sm">
+        <div className="flex flex-row gap-x-6 gap-y-4 py-4 flex-wrap text-sm">
           <div className="flex flex-col gap-y-1">
             <Label className="label">Status:</Label>
             <p>{formatStatus(task.status)}</p>
@@ -78,9 +78,9 @@ const TaskCard = ({ task }: TaskCardProps) => {
             <p>{formatPriority(task.priority)}</p>
           </div>
         </div>
-        <ScrollArea className="h-42 rounded-md border mb-8">
+        <ScrollArea className="h-60 rounded-md border mb-8">
           <div className="p-4">
-            <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
               {task?.description || "No description provided."}
             </p>
           </div>
