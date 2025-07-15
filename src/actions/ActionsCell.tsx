@@ -27,7 +27,6 @@ import ViewTask from "@/components/ViewTask";
 
 export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
   const addToast = useToastStore((state) => state.addToast);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
@@ -77,6 +76,17 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
               </DialogHeader>
               <ViewTask taskData={task} />
             </DialogContent>
+          </Dialog>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Link href={`/author/${task?.authorId}`}>
+                <Button variant="ghost" className="justify-start p-2 w-full">
+                  View Author
+                </Button>
+              </Link>
+            </DialogTrigger>
           </Dialog>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

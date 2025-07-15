@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import prisma from "../lib/prisma";
 import { Priority, Prisma, Status, Type, User } from "../../prisma/prisma";
-import { TaskActionState, TaskWithAuthor } from "@/lib/types";
+import { AuthorWithTasks, TaskActionState, TaskWithAuthor } from "@/lib/types";
 import { getErrorMessage } from "@/modules/get-error-message";
 import {
   createTaskSchema,
@@ -23,6 +23,25 @@ export const getTask = async (slug: string) => {
   });
   return tasks;
 };
+
+//Author/[id]
+export const getAuthor = async (id: string): Promise<AuthorWithTasks> => {
+  const author = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      tasks: true,
+    },
+  });
+
+  if (!author) {
+    throw new Error("Author not found");
+  }
+
+  return author;
+};
+
 //Getting authors for filters
 export const getAuthors = async (): Promise<User[]> => {
   try {

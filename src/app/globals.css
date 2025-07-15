@@ -123,3 +123,9 @@
   padding-bottom: clamp(0.5rem, 5vw + 0.5rem, 1rem);
   
 }
+
+.label {
+  color: var(--muted-foreground);
+  font-size: small;
+  
+}

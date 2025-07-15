@@ -17,6 +17,10 @@ export type TaskWithAuthor = Task & {
   author: User;
 };
 
+export type AuthorWithTasks = User & {
+  tasks: Task[];
+};
+
 export type TaskActionState = {
   message: string;
   success: boolean;
