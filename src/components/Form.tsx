@@ -30,7 +30,6 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     TaskActionState,
     FormData
   >(createTask, initialState);
-  const addToast = useToastStore((state) => state.addToast);
 
   const [status, setStatus] = useState("TODO");
   const [type, setType] = useState("OTHER");
@@ -42,41 +41,10 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task-count"] });
-      console.log("Success Toast data:", {
-        message: state.message,
-        timestamp: new Date().toLocaleString(),
-      });
-      addToast({
-        className: "bg-chart-1",
-        title: `${state.message}`,
-        description: `At ${new Date().toLocaleString()}`,
-      });
-      onSuccess?.();
     } else if (!state.success && state.message) {
-      const fieldErrors = state.errors
-        ? Object.entries(state.errors)
-            .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
-            .join(" | ")
-        : "";
-      console.log("Error Toast data:", {
-        message: state.message,
-        fieldErrors,
-        timestamp: new Date().toLocaleString(),
-      });
-      addToast({
-        className: "bg-destructive",
-        title: `Error: ${state.message}`,
-        description: fieldErrors || `At ${new Date().toLocaleString()}`,
-      });
+      console.log("error");
     }
-  }, [
-    state.success,
-    state.message,
-    state.errors,
-    queryClient,
-    onSuccess,
-    addToast,
-  ]);
+  }, [state.success, state.message, state.errors, queryClient, onSuccess]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-6">
@@ -156,8 +124,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
       <Button disabled={pending} variant="outline" className="max-w-1/3">
         {pending ? "Pending..." : "Create"}
       </Button>
-      {/* DEBUGING TEST */}
-      <p>{state.message ? String(state.message) : null}</p>
+      <p>{state.message}</p>
     </form>
   );
 }
