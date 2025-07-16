@@ -53,6 +53,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task-count"] });
+      queryClient.invalidateQueries({ queryKey: ["author-tasks"] });
       addToast({
         className: "bg-chart-1",
         title: `${state.message}`,
@@ -84,8 +85,8 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
   return (
     <form action={formAction} className="flex flex-col gap-y-6">
       <input type="hidden" name="id" value={task.id} />
-      <div className="flex flex-col gap-y-1">
-        <Label>Task</Label>
+      <div className="flex flex-col gap-y-1 pt-2">
+        <Label className="label">Title:</Label>
         <Input
           name="title"
           required
@@ -97,7 +98,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
       <div className="flex flex-row flex-wrap gap-2">
         {/* STATUS */}
         <div className="flex flex-col gap-y-1 ">
-          <Label>Status</Label>
+          <Label className="label">Status:</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Status" />
@@ -116,7 +117,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
         </div>
         {/* TYPE */}
         <div className="flex flex-col gap-y-1">
-          <Label>Type</Label>
+          <Label className="label">Type:</Label>
           <Select value={type} onValueChange={setType}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Type" />
@@ -136,7 +137,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
         </div>
         {/* PRIORITY */}
         <div className="flex flex-col gap-y-1 ">
-          <Label>Priority</Label>
+          <Label className="label">Priority:</Label>
           <Select value={priority} onValueChange={setPriority}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Priority" />
@@ -155,7 +156,7 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <Label>Description</Label>
+        <Label className="label">Description:</Label>
         <Textarea
           name="description"
           required
@@ -165,8 +166,8 @@ const UpdatePost = ({ task, onSuccess }: UpdatePostProps) => {
         />
       </div>
 
-      <Button disabled={pending} variant="outline">
-        Update
+      <Button disabled={pending} variant="outline" className="max-w-1/3">
+        {pending ? "Pending..." : "Update"}
       </Button>
       <p>{state.message}</p>
     </form>

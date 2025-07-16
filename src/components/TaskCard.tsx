@@ -40,7 +40,8 @@ const TaskCard = ({ task }: TaskCardProps) => {
     const res = await deleteTask(task.id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task-count"] });
+      await queryClient.invalidateQueries({ queryKey: ["task-count"] });
+      await queryClient.invalidateQueries({ queryKey: ["author-tasks"] });
       addToast({
         className: "bg-chart-1",
         title: "Task deleted successfully!",

@@ -70,16 +70,16 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
   ]);
 
   return (
-    <form action={formAction} className="flex flex-col gap-y-3">
-      <div className="flex flex-col gap-y-1">
-        <Label>Task</Label>
+    <form action={formAction} className="flex flex-col gap-y-6">
+      <div className="flex flex-col gap-y-1 pt-2">
+        <Label className="label">Title:</Label>
         <Input name="title" required placeholder="Title..." />
       </div>
 
       <div className="flex flex-row flex-wrap gap-2">
         {/* STATUS */}
         <div className="flex flex-col gap-y-1 ">
-          <Label>Status</Label>
+          <Label className="label">Status:</Label>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Status" />
@@ -99,7 +99,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
         </div>
         {/* TYPE */}
         <div className="flex flex-col gap-y-1 ">
-          <Label>Type</Label>
+          <Label className="label">Type:</Label>
           <Select value={type} onValueChange={setType}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Type" />
@@ -120,7 +120,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
         </div>
         {/* PRIORITY */}
         <div className="flex flex-col gap-y-1 ">
-          <Label>Priority</Label>
+          <Label className="label">Priority:</Label>
           <Select value={priority} onValueChange={setPriority}>
             <SelectTrigger>
               <SelectValue placeholder="Select a Priority" />
@@ -140,7 +140,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
       </div>
 
       <div className="flex flex-col gap-y-1">
-        <Label>Description</Label>
+        <Label className="label">Description:</Label>
         <Textarea name="description" required placeholder="Description..." />
       </div>
 

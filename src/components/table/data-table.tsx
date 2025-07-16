@@ -379,6 +379,21 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                     <ViewTask taskData={selectedTask} />
                   </DialogContent>
                 </Dialog>
+
+                {/* View Author */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Link href={`/author/${selectedTask.authorId}`}>
+                      <Button
+                        variant="outline"
+                        className="max-w-[15rem] justify-start "
+                      >
+                        View Author
+                      </Button>
+                    </Link>
+                  </DialogTrigger>
+                </Dialog>
+
                 {/* Edit Task */}
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>

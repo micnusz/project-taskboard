@@ -11,7 +11,7 @@ const Header = () => {
             href={"/"}
             className="text-foreground hover:text-muted-foreground"
           >
-            <h1>Project Taskboard</h1>
+            <h1>Taskboard</h1>
           </Link>
         </div>
         <div className="flex justify-end">

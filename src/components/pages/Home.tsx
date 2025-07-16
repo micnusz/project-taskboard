@@ -118,7 +118,8 @@ const HomeClientPage = () => {
     status !== undefined ||
     type !== undefined ||
     date !== undefined ||
-    author !== undefined;
+    author !== undefined ||
+    search !== "";
 
   //Pagination
   const totalCount = tasksCount ?? 0;
@@ -138,15 +139,32 @@ const HomeClientPage = () => {
     <main className="px-fluid py-fluid">
       <div>
         <div className="flex flex-col gap-x-2">
-          <div>
+          <div className="flex flex-row gap-x-2">
             <Input
               type="text"
-              placeholder="Search items..."
+              placeholder="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full md:max-w-1/4 px-4 py-4 border rounded-md mb-2"
             />
+            <div>
+              <Button
+                className="w-fit"
+                variant={isFiltered ? "destructive" : "muted"}
+                onClick={() => {
+                  setPriority(undefined);
+                  setStatus(undefined);
+                  setType(undefined);
+                  setDate(undefined);
+                  setAuthor(undefined);
+                  setSearch("");
+                }}
+              >
+                Clear
+              </Button>
+            </div>
           </div>
+
           <div className="flex flex-row gap-x-2 mb-2">
             <DataTableFilters
               userData={userData ?? []}
@@ -161,25 +179,7 @@ const HomeClientPage = () => {
               author={author}
               setAuthor={setAuthor}
             />
-            <div>
-              {isFiltered && (
-                <Button
-                  className="w-fit"
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => {
-                    setPriority(undefined);
-                    setStatus(undefined);
-                    setType(undefined);
-                    setDate(undefined);
-                    setAuthor(undefined);
-                    setSearch("");
-                  }}
-                >
-                  Clear filters
-                </Button>
-              )}
-            </div>
+
             <div>
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
