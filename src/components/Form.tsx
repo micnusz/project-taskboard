@@ -2,7 +2,6 @@
 
 import { createTask } from "@/actions/actions";
 import { useActionState, useEffect, useState } from "react";
-import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -31,9 +30,9 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
   >(createTask, initialState);
   const addToast = useToastStore((state) => state.addToast);
 
-  const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
-  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("TODO");
+  const [type, setType] = useState("OTHER");
+  const [priority, setPriority] = useState("LOW");
 
   const queryClient = useQueryClient();
 
@@ -73,7 +72,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     <form action={formAction} className="flex flex-col gap-y-6">
       <div className="flex flex-col gap-y-1 pt-2">
         <Label className="label">Title:</Label>
-        <Input name="title" required placeholder="Title..." />
+        <input name="title" required placeholder="Title..." />
       </div>
 
       <div className="flex flex-row flex-wrap gap-2">
@@ -95,7 +94,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <Input required type="hidden" name="status" value={status} />
+          <input required type="hidden" name="status" value={status} />
         </div>
         {/* TYPE */}
         <div className="flex flex-col gap-y-1 ">
@@ -135,7 +134,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
             </SelectContent>
           </Select>
           {/* Hidden input */}
-          <Input required type="hidden" name="priority" value={priority} />
+          <input required type="hidden" name="priority" value={priority} />
         </div>
       </div>
 
