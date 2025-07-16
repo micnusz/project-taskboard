@@ -1,16 +1,14 @@
 "use client";
 
 import { deleteTask } from "@/actions/actions";
-import Spinner from "@/lib/Spinner";
 import formatPriority from "@/modules/format-priority";
 import formatStatus from "@/modules/format-status";
 import formatType from "@/modules/format-type";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "@/modules/format-date";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 import formatRole from "@/modules/format-role";
 import { MoreVertical } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
 import { Tooltip, TooltipContent } from "./ui/tooltip";
@@ -23,7 +21,6 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import UpdatePost from "./FormUpdate";
-import { Task, User } from "../../prisma/prisma";
 import { ScrollArea } from "./ui/scroll-area";
 import { TaskWithAuthor } from "@/lib/types";
 

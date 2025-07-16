@@ -1,11 +1,10 @@
 "use client";
 
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   getAuthorInfo,
   getAuthorTask,
   getAuthorTaskCount,
-  getTaskCount,
 } from "@/actions/actions";
 import {
   AuthorPageAction,
@@ -14,13 +13,12 @@ import {
   BadgeVariant,
 } from "@/lib/types";
 import TaskCard from "../TaskCard";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { User } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
-import { Priority, Status, Type } from "../../../prisma/prisma";
 import TaskFilter from "../TaskFilter";
 import debounce from "lodash.debounce";
 import Spinner from "@/lib/Spinner";

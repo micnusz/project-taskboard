@@ -16,7 +16,7 @@ import formatStatus from "@/modules/format-status";
 import formatPriority from "@/modules/format-priority";
 import formatType from "@/modules/format-type";
 import { formatDate } from "@/modules/format-date";
-import { Priority, Status, Type, User } from "../../prisma/prisma";
+import { Priority, Status, Type } from "../../prisma/prisma";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import {
