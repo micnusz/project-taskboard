@@ -52,6 +52,7 @@ import { TaskActionState, TaskWithAuthor } from "@/lib/types";
 import DataTablePagination from "./data-table-pagination";
 import { useToastStore } from "@/lib/toast-store";
 import ViewTask from "../ViewTask";
+import DeleteTaskAlert from "../DeleteTaskAlert";
 
 interface DataTableProps<TData extends TaskWithAuthor, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -237,99 +238,97 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
               const author = task.authorId;
 
               return (
-                <>
-                  <ContextMenu key={row.id}>
-                    <ContextMenuTrigger asChild>
-                      <TableRow data-state={row.getIsSelected() && "selected"}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </ContextMenuTrigger>
-                    <ContextMenuContent className="max-w-[6rem]">
-                      <ContextMenuLabel className="text-muted-foreground">
-                        Menu
-                      </ContextMenuLabel>
-                      <ContextMenuSeparator />
-                      <ContextMenuItem asChild>
-                        {/* View Task */}
-                        <Dialog>
-                          <DialogTrigger asChild>
+                <ContextMenu key={row.id}>
+                  <ContextMenuTrigger asChild>
+                    <TableRow data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="max-w-[6rem]">
+                    <ContextMenuLabel className="text-muted-foreground">
+                      Menu
+                    </ContextMenuLabel>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem asChild>
+                      {/* View Task */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="p-2 justify-start w-full"
+                          >
+                            View Task
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
+                          <DialogHeader>
+                            <DialogTitle className="text-muted-foreground text-sm">
+                              View Task:
+                            </DialogTitle>
+                          </DialogHeader>
+                          <ViewTask taskData={task} />
+                        </DialogContent>
+                      </Dialog>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      {/* View Author */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Link href={`/author/${author}`}>
                             <Button
                               variant="ghost"
                               className="p-2 justify-start w-full"
                             >
-                              View Task
+                              View Author
                             </Button>
-                          </DialogTrigger>
-                          <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
-                            <DialogHeader>
-                              <DialogTitle className="text-muted-foreground text-sm">
-                                View Task:
-                              </DialogTitle>
-                            </DialogHeader>
-                            <ViewTask taskData={task} />
-                          </DialogContent>
-                        </Dialog>
-                      </ContextMenuItem>
-                      <ContextMenuItem asChild>
-                        {/* View Author */}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Link href={`/author/${author}`}>
-                              <Button
-                                variant="ghost"
-                                className="p-2 justify-start w-full"
-                              >
-                                View Author
-                              </Button>
-                            </Link>
-                          </DialogTrigger>
-                        </Dialog>
-                      </ContextMenuItem>
-                      <ContextMenuItem asChild>
-                        {/* Edit Task */}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              className="p-2 justify-start w-full"
-                            >
-                              Edit Task
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="min-h-[20rem] max-h-screen">
-                            <DialogHeader>
-                              <DialogTitle className="text-muted-foreground text-sm">
-                                Edit Task:
-                              </DialogTitle>
-                            </DialogHeader>
-                            <UpdatePost task={task} />
-                          </DialogContent>
-                        </Dialog>
-                      </ContextMenuItem>
-                      <ContextMenuItem asChild>
-                        {/* Delete Task */}
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              className="p-2 justify-start w-full text-red-400"
-                              onClick={() => handleDelete(task.id)}
-                            >
-                              Delete Task
-                            </Button>
-                          </DialogTrigger>
-                        </Dialog>
-                      </ContextMenuItem>
-                    </ContextMenuContent>
-                  </ContextMenu>
-                </>
+                          </Link>
+                        </DialogTrigger>
+                      </Dialog>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      {/* Edit Task */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="p-2 justify-start w-full"
+                          >
+                            Edit Task
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="min-h-[20rem] max-h-screen">
+                          <DialogHeader>
+                            <DialogTitle className="text-muted-foreground text-sm">
+                              Edit Task:
+                            </DialogTitle>
+                          </DialogHeader>
+                          <UpdatePost task={task} />
+                        </DialogContent>
+                      </Dialog>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      {/* Delete Task */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="p-2 justify-start w-full text-red-400"
+                            onClick={() => handleDelete(task.id)}
+                          >
+                            Delete Task
+                          </Button>
+                        </DialogTrigger>
+                      </Dialog>
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
               );
             })
           ) : (
@@ -415,13 +414,10 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                   </DialogContent>
                 </Dialog>
                 {/* Delete Task */}
-                <Button
-                  variant="outline"
-                  className="max-w-[15rem] justify-start text-red-400"
-                  onClick={() => handleDelete(selectedTask.id)}
-                >
-                  Delete Task
-                </Button>
+                <DeleteTaskAlert
+                  title="Delete Task"
+                  onDelete={() => handleDelete(selectedTask.id)}
+                />
               </div>
             </div>
           )}
@@ -429,8 +425,8 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
         <div className="flex flex-col xl:flex-row">
           {selectedRows.length > 1 && (
             <div className="mb-2 flex items-center">
-              {/* Select count, reset selected */}
               <div className="flex flex-row gap-x-2 ">
+                {/* Select count, reset selected */}
                 <div className="flex flex-row items-center">
                   <span className="text-sm">
                     Selected: {selectedRows.length}
@@ -544,13 +540,10 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                   </form>
                   {!isFiltered && (
                     <div>
-                      <Button
-                        variant="outline"
-                        className="max-w-[15rem] text-red-400"
-                        onClick={() => handleDeleteMany(selectedIds)}
-                      >
-                        Delete Tasks
-                      </Button>
+                      <DeleteTaskAlert
+                        title="Delete Tasks"
+                        onDelete={() => handleDeleteMany(selectedIds)}
+                      />
                     </div>
                   )}
                 </div>

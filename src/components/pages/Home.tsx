@@ -183,9 +183,7 @@ const HomeClientPage = () => {
             <div>
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="outline">
-                    Add Task
-                  </Button>
+                  <Button variant="outline">Add Task</Button>
                 </DialogTrigger>
                 <DialogContent className="min-h-[20rem] max-h-screen">
                   <DialogHeader>

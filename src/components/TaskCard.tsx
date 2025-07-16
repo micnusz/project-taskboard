@@ -27,6 +27,7 @@ import UpdatePost from "./FormUpdate";
 import { useToastStore } from "@/lib/toast-store";
 import { useQueryClient } from "@tanstack/react-query";
 import { deleteTask } from "@/actions/actions";
+import DeleteTaskAlert from "./DeleteTaskAlert";
 
 type TaskCardProps = {
   task: Task;
@@ -100,17 +101,10 @@ const TaskCard = ({ task }: TaskCardProps) => {
             </DialogContent>
           </Dialog>
           {/* Delete Task */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="text-red-400"
-                onClick={handleDelete}
-              >
-                Delete Task
-              </Button>
-            </DialogTrigger>
-          </Dialog>
+          <DeleteTaskAlert
+            title="Delete Task"
+            onDelete={() => handleDelete()}
+          ></DeleteTaskAlert>
         </div>
       </CardContent>
     </Card>

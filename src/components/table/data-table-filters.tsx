@@ -84,11 +84,10 @@ const DataTableFilters = ({
     >
       <PopoverTrigger asChild>
         <Button
-          variant={activeFiltersCount ? "default" : "outline"}
+          variant={activeFiltersCount ? "default" : "muted"}
           className="justify-between"
-          size="sm"
         >
-          <Filter className="mr-2 h-4 w-4" />
+          <Filter className=" h-4 w-4" />
           {buttonLabel}
         </Button>
       </PopoverTrigger>

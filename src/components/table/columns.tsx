@@ -16,6 +16,7 @@ import formatRole from "@/modules/format-role";
 import { Label } from "../ui/label";
 import formatType from "@/modules/format-type";
 import { TaskWithAuthor } from "@/lib/types";
+import Link from "next/link";
 
 export const getColumns = ({
   sortField,
@@ -258,16 +259,24 @@ export const getColumns = ({
         <div>
           <Tooltip>
             <TooltipTrigger>
-              <Badge variant={variant}>
-                <CircleUser className="w-4 h-4" /> {author?.name || "Unknown"}
-              </Badge>
+              <Link href={`/author/${author.id}`}>
+                <Badge variant={variant}>
+                  <CircleUser className="w-4 h-4" /> {author?.name || "Unknown"}
+                </Badge>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <div className="flex flex-col gap-y-2">
-                <Label>Email:</Label>
-                <p>{author?.email}</p>
-                <Label>Role:</Label>
-                <p>{author?.role ? formatRole(author.role) : "No role"}</p>
+                <div>
+                  <Label className="label">Email:</Label>
+                  <p>{author?.email}</p>
+                </div>
+                <div>
+                  <Label className="label">Role:</Label>
+                  <span>
+                    {author?.role ? formatRole(author.role) : "No role"}
+                  </span>
+                </div>
               </div>
             </TooltipContent>
           </Tooltip>
