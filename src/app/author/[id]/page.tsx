@@ -1,15 +1,31 @@
 import {
   getAuthorInfo,
+  getAuthorName,
   getAuthorTask,
   getAuthorTaskCount,
 } from "@/actions/actions";
 import AuthorPage from "@/components/pages/AuthorPage";
 import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Metadata } from "next";
 
 type TaskServerPageProps = {
   params: Promise<{ id: string }>;
 };
+
+export const generateMetadata = async ({
+  params,
+}: TaskServerPageProps): Promise<Metadata> => {
+  const { id } = await params;
+  const author = await getAuthorName(id);
+  const name = author?.name ?? "Default title";
+
+  return {
+    title: `${name} - Author Page`,
+    description: `Author Page: ${name} - Taskboard`,
+  };
+};
+
 const TaskServerPage = async ({ params }: TaskServerPageProps) => {
   const resolvedParams = await params;
   const { id } = resolvedParams;

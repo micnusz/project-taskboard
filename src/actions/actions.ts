@@ -459,6 +459,23 @@ export const getAuthorInfo = async (id: string): Promise<User> => {
   return author;
 };
 
+export const getAuthorName = async (
+  id: string
+): Promise<{ name: string | null }> => {
+  const author = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      name: true,
+    },
+  });
+
+  if (!author) {
+    throw new Error("Author not found");
+  }
+
+  return author; // teraz author ma tylko pole "name"
+};
+
 //Tasks count
 export const getTaskCount = async (
   searchInput: string,

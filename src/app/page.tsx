@@ -10,8 +10,8 @@ import { Suspense } from "react";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Home Page - Project Taskboard",
-    description: "Project Taskboard, Home Page",
+    title: "Taskboard",
+    description: "Home Page - Project Taskboard",
   };
 };
 

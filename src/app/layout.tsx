@@ -10,7 +10,7 @@ const roboto = Roboto({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "Project Taskboard",
+  title: "Taskboard",
   description: "Home Page - Project Taskboard",
 };
 
