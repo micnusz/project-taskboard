@@ -7,9 +7,14 @@ import {
   getAuthorTaskCount,
   getTaskCount,
 } from "@/actions/actions";
-import { AuthorWithTasks, BadgeVariant } from "@/lib/types";
+import {
+  AuthorPageAction,
+  AuthorPageState,
+  AuthorWithTasks,
+  BadgeVariant,
+} from "@/lib/types";
 import TaskCard from "../TaskCard";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { User } from "lucide-react";
@@ -24,21 +29,54 @@ import DataTablePagination from "../table/data-table-pagination";
 type AuthorPageProps = {
   id: string;
 };
+const initialState: AuthorPageState = {
+  pagination: { pageIndex: 0, pageSize: 10 },
+  search: "",
+  queryText: "",
+  priority: undefined,
+  status: undefined,
+  type: undefined,
+  date: undefined,
+};
+
+const reducer = (
+  state: AuthorPageState,
+  action: AuthorPageAction
+): AuthorPageState => {
+  switch (action.type) {
+    case "SET_PAGINATION":
+      return { ...state, pagination: action.payload };
+    case "SET_SEARCH":
+      return { ...state, search: action.payload };
+    case "SET_QUERY_TEXT":
+      return { ...state, queryText: action.payload };
+    case "SET_PRIORITY":
+      return { ...state, priority: action.payload };
+    case "SET_STATUS":
+      return { ...state, status: action.payload };
+    case "SET_TYPE":
+      return { ...state, type: action.payload };
+    case "SET_DATE":
+      return { ...state, date: action.payload };
+    case "CLEAR_FILTERS":
+      return {
+        ...state,
+        priority: undefined,
+        status: undefined,
+        type: undefined,
+        date: undefined,
+        search: "",
+      };
+    default:
+      return state;
+  }
+};
 
 const AuthorPage = ({ id }: AuthorPageProps) => {
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [search, setSearch] = useState("");
-  const [queryText, setQueryText] = useState("");
-  const [priority, setPriority] = useState<Priority | undefined>(undefined);
-  const [status, setStatus] = useState<Status | undefined>(undefined);
-  const [type, setType] = useState<Type | undefined>(undefined);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const offset = pagination.pageIndex * pagination.pageSize;
-  const limit = pagination.pageSize;
+  const offset = state.pagination.pageIndex * state.pagination.pageSize;
+  const limit = state.pagination.pageSize;
 
   //Author info
   const { data: authorInfo } = useQuery({
@@ -47,58 +85,73 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
   });
   //Task count
   const { data: tasksCount } = useQuery({
-    queryKey: ["task-count", id, queryText, priority, status, type, date],
+    queryKey: [
+      "task-count",
+      id,
+      state.queryText,
+      state.priority,
+      state.status,
+      state.type,
+      state.date,
+    ],
     queryFn: () =>
-      getAuthorTaskCount(id, queryText, priority, status, type, date),
+      getAuthorTaskCount(
+        id,
+        state.queryText,
+        state.priority,
+        state.status,
+        state.type,
+        state.date
+      ),
   });
   //Author tasks data
   const { data: authorData, isFetching } = useQuery<AuthorWithTasks>({
     queryKey: [
       "author-tasks",
       id,
-      queryText,
+      state.queryText,
       limit,
       offset,
-      priority,
-      status,
-      type,
-      date,
+      state.priority,
+      state.status,
+      state.type,
+      state.date,
     ],
     queryFn: () =>
-      getAuthorTask(id, queryText, limit, offset, priority, status, type, date),
+      getAuthorTask(
+        id,
+        state.queryText,
+        limit,
+        offset,
+        state.priority,
+        state.status,
+        state.type,
+        state.date
+      ),
     enabled: !!id,
   });
+
+  //Search bar
 
   //Search bar
   const debouncedSetQueryText = useMemo(
     () =>
       debounce((text: string) => {
-        setQueryText(text);
+        dispatch({ type: "SET_QUERY_TEXT", payload: text });
       }, 300),
     []
   );
   useEffect(() => {
-    debouncedSetQueryText(search);
-    return () => {
-      debouncedSetQueryText.cancel();
-    };
-  }, [search, debouncedSetQueryText]);
-
-  //Clear filters
-  const handleClear = () => {
-    setSearch("");
-    setPriority(undefined);
-    setStatus(undefined);
-    setType(undefined);
-    setDate(undefined);
-  };
+    debouncedSetQueryText(state.search);
+    return () => debouncedSetQueryText.cancel();
+  }, [state.search, debouncedSetQueryText]);
 
   const isFiltered =
-    search !== "" ||
-    priority !== undefined ||
-    status !== undefined ||
-    type !== undefined ||
-    date !== undefined;
+    state.priority !== undefined ||
+    state.status !== undefined ||
+    state.type !== undefined ||
+    state.date !== undefined ||
+    state.search !== "";
 
   const formattedRole = authorInfo?.role
     ? authorInfo.role.toLowerCase().replace(/^./, (c) => c.toUpperCase())
@@ -108,14 +161,22 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
 
   //Pagination
   const totalCount = tasksCount ?? 0;
-  const pageCount = Math.max(1, Math.ceil(totalCount / pagination.pageSize));
+  const pageCount = Math.max(
+    1,
+    Math.ceil(totalCount / state.pagination.pageSize)
+  );
   const handlePageChange = (newPageIndex: number) => {
-    if (!pageCount) return;
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
-    setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
+    dispatch({
+      type: "SET_PAGINATION",
+      payload: { ...state.pagination, pageIndex: newPageIndex },
+    });
   };
   const handlePageSizeChange = (newPageSize: number) => {
-    setPagination({ pageIndex: 0, pageSize: newPageSize });
+    dispatch({
+      type: "SET_PAGINATION",
+      payload: { pageIndex: 0, pageSize: newPageSize },
+    });
   };
 
   return (
@@ -144,24 +205,28 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
           <Input
             type="text"
             placeholder="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={state.search}
+            onChange={(e) =>
+              dispatch({ type: "SET_SEARCH", payload: e.target.value })
+            }
             className="w-full md:max-w-1/4 px-4 py-4 border rounded-md mb-2"
           />
           <TaskFilter
-            priority={priority}
-            setPriority={setPriority}
-            status={status}
-            setStatus={setStatus}
-            type={type}
-            setType={setType}
-            date={date}
-            setDate={setDate}
+            priority={state.priority}
+            setPriority={(val) =>
+              dispatch({ type: "SET_PRIORITY", payload: val })
+            }
+            status={state.status}
+            setStatus={(val) => dispatch({ type: "SET_STATUS", payload: val })}
+            type={state.type}
+            setType={(val) => dispatch({ type: "SET_TYPE", payload: val })}
+            date={state.date}
+            setDate={(val) => dispatch({ type: "SET_DATE", payload: val })}
           />
 
           <Button
             variant={isFiltered ? "destructive" : "muted"}
-            onClick={() => handleClear()}
+            onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
           >
             Clear
           </Button>
@@ -183,13 +248,13 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
           )}
         </div>
         <DataTablePagination
-          pageIndex={pagination.pageIndex}
-          pageSize={pagination.pageSize}
+          pageIndex={state.pagination.pageIndex}
+          pageSize={state.pagination.pageSize}
           pageCount={pageCount}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
-          canPreviousPage={pagination.pageIndex > 0}
-          canNextPage={pagination.pageIndex + 1 < pageCount}
+          canPreviousPage={state.pagination.pageIndex > 0}
+          canNextPage={state.pagination.pageIndex + 1 < pageCount}
         />
       </section>
     </main>
