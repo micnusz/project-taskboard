@@ -23,21 +23,31 @@ import { Button } from "./ui/button";
 import UpdatePost from "./FormUpdate";
 import { ScrollArea } from "./ui/scroll-area";
 import { TaskWithAuthor } from "@/lib/types";
+import { useToastStore } from "@/lib/toast-store";
 
 type ViewTaskProps = {
   taskData: TaskWithAuthor;
 };
 
 const ViewTask = ({ taskData }: ViewTaskProps) => {
+  const addToast = useToastStore((state) => state.addToast);
   const queryClient = useQueryClient();
 
   const handleDelete = async () => {
     const res = await deleteTask(taskData.id);
     if (res.message === "Task deleted successfully!") {
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      await queryClient.invalidateQueries({ queryKey: ["task", taskData.id] });
+      addToast({
+        className: "bg-chart-1",
+        title: "Task deleted successfully!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     } else {
-      console.log({ message: res.message, type: "error" });
+      addToast({
+        className: "bg-destructive",
+        title: "Error: Task deletion failed!",
+        description: `At ${new Date().toLocaleString()}`,
+      });
     }
   };
 

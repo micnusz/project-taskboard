@@ -17,6 +17,8 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { TaskActionState } from "@/lib/types";
 import { useToastStore } from "@/lib/toast-store";
+import { Input } from "./ui/input";
+
 const initialState: TaskActionState = {
   message: "",
   success: false,
@@ -40,6 +42,10 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task-count"] });
+      console.log("Success Toast data:", {
+        message: state.message,
+        timestamp: new Date().toLocaleString(),
+      });
       addToast({
         className: "bg-chart-1",
         title: `${state.message}`,
@@ -52,7 +58,11 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
             .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
             .join(" | ")
         : "";
-
+      console.log("Error Toast data:", {
+        message: state.message,
+        fieldErrors,
+        timestamp: new Date().toLocaleString(),
+      });
       addToast({
         className: "bg-destructive",
         title: `Error: ${state.message}`,
@@ -72,7 +82,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     <form action={formAction} className="flex flex-col gap-y-6">
       <div className="flex flex-col gap-y-1 pt-2">
         <Label className="label">Title:</Label>
-        <input name="title" required placeholder="Title..." />
+        <Input name="title" required placeholder="Title..." />
       </div>
 
       <div className="flex flex-row flex-wrap gap-2">
@@ -146,7 +156,8 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
       <Button disabled={pending} variant="outline" className="max-w-1/3">
         {pending ? "Pending..." : "Create"}
       </Button>
-      <p>{state.message}</p>
+      {/* DEBUGING TEST */}
+      <p>{state.message ? String(state.message) : null}</p>
     </form>
   );
 }
