@@ -21,13 +21,11 @@ import Link from "next/link";
 export const getColumns = ({
   sortField,
   sortOrder,
-  setSortField,
-  setSortOrder,
+  setSort,
 }: {
-  sortField: string;
-  sortOrder: "asc" | "desc";
-  setSortField: (field: string) => void;
-  setSortOrder: (order: "asc" | "desc") => void;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
+  setSort: (field: string) => void;
 }): ColumnDef<TaskWithAuthor>[] => [
   {
     id: "select",
@@ -54,14 +52,7 @@ export const getColumns = ({
   {
     accessorKey: "title",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "title" && sortOrder === "asc";
-          setSortField("title");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("title")}>
         Title
         <ChevronDown
           className={
@@ -81,14 +72,7 @@ export const getColumns = ({
   {
     accessorKey: "description",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "description" && sortOrder === "asc";
-          setSortField("description");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("description")}>
         Description
         <ChevronDown
           className={
@@ -119,14 +103,7 @@ export const getColumns = ({
   {
     accessorKey: "status",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "status" && sortOrder === "asc";
-          setSortField("status");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("status")}>
         Status
         <ChevronDown
           className={
@@ -151,14 +128,7 @@ export const getColumns = ({
   {
     accessorKey: "type",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "type" && sortOrder === "asc";
-          setSortField("type");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("type")}>
         Type
         <ChevronDown
           className={
@@ -180,14 +150,7 @@ export const getColumns = ({
   {
     accessorKey: "priority",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "priority" && sortOrder === "asc";
-          setSortField("priority");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("priority")}>
         Priority
         <ChevronDown
           className={
@@ -212,14 +175,7 @@ export const getColumns = ({
   {
     accessorKey: "createdAt",
     header: () => (
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const isAsc = sortField === "createdAt" && sortOrder === "asc";
-          setSortField("createdAt");
-          setSortOrder(isAsc ? "desc" : "asc");
-        }}
-      >
+      <Button variant="ghost" onClick={() => setSort("createdAt")}>
         Created At
         <ChevronDown
           className={

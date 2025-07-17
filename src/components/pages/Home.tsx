@@ -146,16 +146,26 @@ const HomeClientPage = () => {
       getColumns({
         sortField: state.sortField,
         sortOrder: state.sortOrder,
-        setSortField: (field) =>
+        setSort: (field) => {
+          const isSame = state.sortField === field;
+          let nextOrder: "asc" | "desc" | undefined;
+
+          if (!isSame) {
+            nextOrder = "desc";
+          } else if (state.sortOrder === "desc") {
+            nextOrder = "asc";
+          } else if (state.sortOrder === "asc") {
+            nextOrder = undefined; // lub "desc" jeśli chcesz cykliczne sortowanie
+          }
+
           dispatch({
             type: "SET_SORT",
-            payload: { field, order: state.sortOrder },
-          }),
-        setSortOrder: (order) =>
-          dispatch({
-            type: "SET_SORT",
-            payload: { field: state.sortField, order },
-          }),
+            payload: {
+              field: nextOrder ? field : undefined,
+              order: nextOrder,
+            },
+          });
+        },
       }),
     [state.sortField, state.sortOrder]
   );
