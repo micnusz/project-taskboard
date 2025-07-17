@@ -36,7 +36,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import { deleteTask, updateManyPosts } from "@/actions/actions";
+import { updateManyPosts } from "@/actions/actions";
 import { Priority, Status, Type } from "../../../prisma/prisma";
 import {
   ArrowDownUp,
@@ -75,6 +75,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { useDeleteTask } from "@/hook/useDeleteTask";
+import { useDeleteManyTasks } from "@/hook/useDeleteManyTasks";
 
 interface DataTableProps<TData extends TaskWithAuthor, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -121,8 +123,11 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
     TaskActionState,
     FormData
   >(updateManyPosts, initialState);
-
   const queryClient = useQueryClient();
+
+  //Delete hooks
+  const { handleDelete } = useDeleteTask();
+  const { handleDeleteMany } = useDeleteManyTasks();
 
   //Clear filters
   const handleClear = () => {
@@ -166,51 +171,6 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
     addToast,
     table,
   ]);
-
-  //Delete one
-  const handleDelete = async (id: string) => {
-    const res = await deleteTask(id);
-    if (res.message === "Task deleted successfully!") {
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task-count"] });
-      addToast({
-        className: "bg-chart-1",
-        title: "Task deleted successfully!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-      table.resetRowSelection();
-    } else {
-      addToast({
-        className: "bg-destructive",
-        title: "Error: Task failed!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    }
-  };
-  //Delete many
-  const handleDeleteMany = async (ids: string[]) => {
-    try {
-      for (const id of ids) {
-        const res = await deleteTask(id);
-        if (res.message !== "Tasks deleted successfully!") {
-        }
-      }
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task-count"] });
-      addToast({
-        className: "bg-chart-1",
-        title: "Task deleted successfully!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-      table.resetRowSelection();
-    } catch {
-      addToast({
-        className: "bg-destructive",
-        title: "Error: Task failed!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    }
-  };
 
   const isFiltered = status !== "" || priority !== "" || type !== "";
 
@@ -450,7 +410,7 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                         </AlertDialogTrigger>
                       </TooltipTrigger>
                       <TooltipContent className="text-sm">
-                        Delete Tasks
+                        Delete Task
                       </TooltipContent>
                     </Tooltip>
 
@@ -608,12 +568,12 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
 
                       {isFiltered && (
                         <div className="flex flex-row gap-x-2">
-                          <Button disabled={pending} variant="outline">
+                          <Button disabled={pending} variant="default">
                             Update
                           </Button>
                           {/* <p>{state.message}</p> */}
                           <Button
-                            variant="destructive"
+                            variant="outline"
                             onClick={() => handleClear()}
                           >
                             Clear

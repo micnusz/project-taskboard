@@ -202,7 +202,6 @@ const HomeClientPage = () => {
     1,
     Math.ceil(totalCount / state.pagination.pageSize)
   );
-
   const handlePageChange = (newPageIndex: number) => {
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
     dispatch({
@@ -210,7 +209,6 @@ const HomeClientPage = () => {
       payload: { ...state.pagination, pageIndex: newPageIndex },
     });
   };
-
   const handlePageSizeChange = (newPageSize: number) => {
     dispatch({
       type: "SET_PAGINATION",

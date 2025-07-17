@@ -1,7 +1,5 @@
 "use client";
 import { TaskWithAuthor } from "@/lib/types";
-import { useQueryClient } from "@tanstack/react-query";
-import { deleteTask } from "./actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,32 +20,12 @@ import {
 } from "@/components/ui/dialog";
 import UpdatePost from "@/components/FormUpdate";
 import React from "react";
-import { useToastStore } from "@/lib/toast-store";
 import ViewTask from "@/components/ViewTask";
 import DeleteTaskAlert from "@/components/DeleteTaskAlert";
+import { useDeleteTask } from "@/hook/useDeleteTask";
 
 export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
-  const addToast = useToastStore((state) => state.addToast);
-  const queryClient = useQueryClient();
-
-  const handleDelete = async () => {
-    const res = await deleteTask(task.id);
-    if (res.message === "Task deleted successfully!") {
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task-count"] });
-      addToast({
-        className: "bg-chart-1",
-        title: "Task deleted successfully!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    } else {
-      addToast({
-        className: "bg-destructive",
-        title: "Error: Task deletion failed!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    }
-  };
+  const { handleDelete } = useDeleteTask();
 
   return (
     <DropdownMenu>
@@ -109,7 +87,7 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
           {/* Delete Task */}
           <Dialog>
             <DialogTrigger asChild>
-              <DeleteTaskAlert onDelete={() => handleDelete()}>
+              <DeleteTaskAlert onDelete={() => handleDelete(task.id)}>
                 <Button
                   variant="ghost"
                   className="justify-start p-2 w-full text-red-500"

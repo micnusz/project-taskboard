@@ -22,38 +22,15 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import UpdatePost from "./FormUpdate";
-import { useToastStore } from "@/lib/toast-store";
-import { useQueryClient } from "@tanstack/react-query";
-import { deleteTask } from "@/actions/actions";
 import DeleteTaskAlert from "./DeleteTaskAlert";
+import { useDeleteTask } from "@/hook/useDeleteTask";
 
 type TaskCardProps = {
   task: Task;
 };
 
 const TaskCard = ({ task }: TaskCardProps) => {
-  const addToast = useToastStore((state) => state.addToast);
-  const queryClient = useQueryClient();
-
-  const handleDelete = async () => {
-    const res = await deleteTask(task.id);
-    if (res.message === "Task deleted successfully!") {
-      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      await queryClient.invalidateQueries({ queryKey: ["task-count"] });
-      await queryClient.invalidateQueries({ queryKey: ["author-tasks"] });
-      addToast({
-        className: "bg-chart-1",
-        title: "Task deleted successfully!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    } else {
-      addToast({
-        className: "bg-destructive",
-        title: "Error: Task deletion failed!",
-        description: `At ${new Date().toLocaleString()}`,
-      });
-    }
-  };
+  const { handleDelete } = useDeleteTask();
 
   return (
     <Card className="w-full h-full flex flex-col ">
@@ -99,7 +76,7 @@ const TaskCard = ({ task }: TaskCardProps) => {
             </DialogContent>
           </Dialog>
           {/* Delete Task */}
-          <DeleteTaskAlert onDelete={() => handleDelete()}>
+          <DeleteTaskAlert onDelete={() => handleDelete(task.id)}>
             <Button variant="outline" className="text-red-500">
               Delete Task
             </Button>
