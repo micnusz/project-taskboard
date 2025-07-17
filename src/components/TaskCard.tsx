@@ -99,10 +99,11 @@ const TaskCard = ({ task }: TaskCardProps) => {
             </DialogContent>
           </Dialog>
           {/* Delete Task */}
-          <DeleteTaskAlert
-            title="Delete Task"
-            onDelete={() => handleDelete()}
-          ></DeleteTaskAlert>
+          <DeleteTaskAlert onDelete={() => handleDelete()}>
+            <Button variant="outline" className="text-red-500">
+              Delete Task
+            </Button>
+          </DeleteTaskAlert>
         </div>
       </CardContent>
     </Card>

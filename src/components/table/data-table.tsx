@@ -56,7 +56,6 @@ import {
   SelectLabel,
   SelectSeparator,
   SelectTrigger,
-  SelectValue,
 } from "../ui/select";
 import { TaskActionState, TaskWithAuthor } from "@/lib/types";
 import DataTablePagination from "./data-table-pagination";
