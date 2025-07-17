@@ -282,7 +282,6 @@ export const searchTask = async (
   }
 
   try {
-    console.log("Sorting by:", sortField, sortOrder);
     const tasks = await prisma.task.findMany({
       orderBy: {
         [sortField]: sortOrder,

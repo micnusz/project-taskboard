@@ -148,20 +148,20 @@ const HomeClientPage = () => {
         sortOrder: state.sortOrder,
         setSort: (field) => {
           const isSame = state.sortField === field;
-          let nextOrder: "asc" | "desc" | undefined;
+          let nextOrder: "asc" | "desc";
 
           if (!isSame) {
             nextOrder = "desc";
           } else if (state.sortOrder === "desc") {
             nextOrder = "asc";
-          } else if (state.sortOrder === "asc") {
-            nextOrder = undefined; // lub "desc" jeśli chcesz cykliczne sortowanie
+          } else {
+            nextOrder = "desc";
           }
 
           dispatch({
             type: "SET_SORT",
             payload: {
-              field: nextOrder ? field : undefined,
+              field,
               order: nextOrder,
             },
           });
