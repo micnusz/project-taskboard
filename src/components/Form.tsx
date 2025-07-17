@@ -16,6 +16,7 @@ import {
 } from "./ui/select";
 import { useQueryClient } from "@tanstack/react-query";
 import { TaskActionState } from "@/lib/types";
+import { useToastStore } from "@/lib/toast-store";
 import { Input } from "./ui/input";
 
 const initialState: TaskActionState = {
@@ -29,6 +30,7 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     TaskActionState,
     FormData
   >(createTask, initialState);
+  const addToast = useToastStore((state) => state.addToast);
 
   const [status, setStatus] = useState("TODO");
   const [type, setType] = useState("OTHER");
@@ -40,10 +42,33 @@ export default function Form({ onSuccess }: { onSuccess?: () => void }) {
     if (state.success) {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["task-count"] });
+      addToast({
+        className: "bg-chart-1",
+        title: `${state.message}`,
+        description: `At ${new Date().toLocaleString()}`,
+      });
+      onSuccess?.();
     } else if (!state.success && state.message) {
-      console.log("error");
+      const fieldErrors = state.errors
+        ? Object.entries(state.errors)
+            .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+            .join(" | ")
+        : "";
+
+      addToast({
+        className: "bg-destructive",
+        title: `Error: ${state.message}`,
+        description: fieldErrors || `At ${new Date().toLocaleString()}`,
+      });
     }
-  }, [state.success, state.message, state.errors, queryClient, onSuccess]);
+  }, [
+    state.success,
+    state.message,
+    state.errors,
+    queryClient,
+    addToast,
+    onSuccess,
+  ]);
 
   return (
     <form action={formAction} className="flex flex-col gap-y-6">
