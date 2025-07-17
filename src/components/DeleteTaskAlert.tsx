@@ -1,4 +1,5 @@
 "use client";
+
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -11,24 +12,26 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
+import { ReactNode } from "react";
 
-type DeleteTaskAlert = {
-  title: string;
+type DeleteTaskAlertProps = {
+  title?: string;
   onDelete: () => void;
+  children: ReactNode; // trigger element
 };
 
-export default function DeleteTaskAlert({ onDelete, title }: DeleteTaskAlert) {
+export default function DeleteTaskAlert({
+  onDelete,
+  title,
+  children,
+}: DeleteTaskAlertProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button className="text-red-500" variant="outline">
-          {title}
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Are you sure you want to delete this post?
+            {title || "Are you sure you want to delete this task?"}
           </AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone.

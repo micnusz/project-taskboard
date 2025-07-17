@@ -190,7 +190,7 @@ export const getColumns = ({
     ),
     cell: ({ row }) => {
       const date: Date = row.getValue("createdAt");
-      return <div>{formatDate(date)}</div>;
+      return <div className="w-fit">{formatDate(date)}</div>;
     },
   },
   {

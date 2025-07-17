@@ -38,13 +38,23 @@ import { Button } from "../ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { deleteTask, updateManyPosts } from "@/actions/actions";
 import { Priority, Status, Type } from "../../../prisma/prisma";
-import { X } from "lucide-react";
+import {
+  ArrowDownUp,
+  FileText,
+  Library,
+  LoaderCircle,
+  PencilLine,
+  Trash2,
+  UserSearch,
+  X,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -53,6 +63,19 @@ import DataTablePagination from "./data-table-pagination";
 import { useToastStore } from "@/lib/toast-store";
 import ViewTask from "../ViewTask";
 import DeleteTaskAlert from "../DeleteTaskAlert";
+import TooltipWrapper from "../TooltipWrapper";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface DataTableProps<TData extends TaskWithAuthor, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -317,13 +340,16 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                       {/* Delete Task */}
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="p-2 justify-start w-full text-red-400"
-                            onClick={() => handleDelete(task.id)}
+                          <DeleteTaskAlert
+                            onDelete={() => handleDelete(task.id)}
                           >
-                            Delete Task
-                          </Button>
+                            <Button
+                              variant="ghost"
+                              className="p-2 justify-start w-full text-red-500"
+                            >
+                              Delete Task
+                            </Button>
+                          </DeleteTaskAlert>
                         </DialogTrigger>
                       </Dialog>
                     </ContextMenuItem>
@@ -341,10 +367,10 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
         </TableBody>
       </Table>
 
-      <div className="flex flex-col xl:flex-row gap-x-2 py-2">
-        <div className="flex flex-col xl:flex-row">
-          {selectedRows.length === 1 && (
-            <div className="mb-2 flex items-center ">
+      <div className="flex flex-col xl:flex-row py-4 gap-y-8">
+        <div className="flex flex-col xl:flex-row ">
+          {selectedRows.length === 1 ? (
+            <div className="mb-2 flex  items-center ">
               <div className="flex flex-row gap-x-2 ">
                 {/* Select count, reset selected */}
                 <div className="flex flex-row items-center">
@@ -361,18 +387,17 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                 </div>
                 {/* View Task */}
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="max-w-[15rem] justify-start "
-                    >
-                      View Task
-                    </Button>
-                  </DialogTrigger>
+                  <TooltipWrapper title="View Details">
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <FileText className={`h-4 w-4 text-foreground`} />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipWrapper>
                   <DialogContent className="min-h-[20rem] max-h-screen min-w-1/2">
                     <DialogHeader>
                       <DialogTitle className="text-muted-foreground text-sm">
-                        View Task:
+                        View Details:
                       </DialogTitle>
                     </DialogHeader>
                     <ViewTask taskData={selectedTask} />
@@ -381,28 +406,29 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
 
                 {/* View Author */}
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <Link href={`/author/${selectedTask.authorId}`}>
-                      <Button
-                        variant="outline"
-                        className="max-w-[15rem] justify-start "
-                      >
-                        View Author
-                      </Button>
-                    </Link>
-                  </DialogTrigger>
+                  <TooltipWrapper title="View Author">
+                    <DialogTrigger asChild>
+                      <Link href={`/author/${selectedTask.authorId}`}>
+                        <Button
+                          variant="outline"
+                          className="max-w-[15rem] justify-start "
+                        >
+                          <UserSearch />
+                        </Button>
+                      </Link>
+                    </DialogTrigger>
+                  </TooltipWrapper>
                 </Dialog>
 
                 {/* Edit Task */}
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="max-w-[15rem] justify-start "
-                    >
-                      Edit Task
-                    </Button>
-                  </DialogTrigger>
+                  <TooltipWrapper title="Edit Task">
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <PencilLine className={`h-4 w-4 text-foreground`} />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipWrapper>
                   <DialogContent className="min-h-[20rem] max-h-screen">
                     <DialogHeader>
                       <DialogTitle>Edit Task:</DialogTitle>
@@ -414,23 +440,55 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                   </DialogContent>
                 </Dialog>
                 {/* Delete Task */}
-                <DeleteTaskAlert
-                  title="Delete Task"
-                  onDelete={() => handleDelete(selectedTask.id)}
-                />
+                <div>
+                  <AlertDialog>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="outline">
+                            <Trash2 className="text-foreground" />
+                          </Button>
+                        </AlertDialogTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent className="text-sm">
+                        Delete Tasks
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you sure you want to delete this task?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                          <Button
+                            onClick={() => handleDelete(selectedTask.id)}
+                            variant="outline"
+                            className="text-red-500"
+                          >
+                            Delete
+                          </Button>
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </div>
-          )}
-        </div>
-        <div className="flex flex-col xl:flex-row">
-          {selectedRows.length > 1 && (
-            <div className="mb-2 flex items-center">
+          ) : selectedRows.length > 1 ? (
+            <div className="mb-2 flex items-center ">
               <div className="flex flex-row gap-x-2 ">
                 {/* Select count, reset selected */}
-                <div className="flex flex-row items-center">
-                  <span className="text-sm">
+                <div className="flex flex-row items-center ">
+                  <span className="text-sm ">
                     Selected: {selectedRows.length}
-                  </span>{" "}
+                  </span>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -456,12 +514,21 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                             setStatus(value as Status | "")
                           }
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a Status" />
-                          </SelectTrigger>
+                          <TooltipWrapper title="Update Status">
+                            <SelectTrigger withIcon={false}>
+                              <LoaderCircle
+                                className={`h-4 w-4 ${
+                                  status
+                                    ? "text-foreground"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                            </SelectTrigger>
+                          </TooltipWrapper>
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Status</SelectLabel>
+                              <SelectSeparator />
                               <SelectItem value="TODO">Todo</SelectItem>
                               <SelectItem value="IN_PROGRESS">
                                 In Progress
@@ -479,12 +546,21 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                           value={type}
                           onValueChange={(value) => setType(value as Type | "")}
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a Type" />
-                          </SelectTrigger>
+                          <TooltipWrapper title="Update Type">
+                            <SelectTrigger withIcon={false}>
+                              <Library
+                                className={`h-4 w-4 ${
+                                  type
+                                    ? "text-foreground"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                            </SelectTrigger>
+                          </TooltipWrapper>
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Type</SelectLabel>
+                              <SelectSeparator />
                               <SelectItem value="BUG">Bug</SelectItem>
                               <SelectItem value="DOCUMENTATION">
                                 Documentation
@@ -507,12 +583,21 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                             setPriority(value as Priority | "")
                           }
                         >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a Priority" />
-                          </SelectTrigger>
+                          <TooltipWrapper title="Update Priority">
+                            <SelectTrigger withIcon={false}>
+                              <ArrowDownUp
+                                className={`h-4 w-4 ${
+                                  priority
+                                    ? "text-foreground"
+                                    : "text-muted-foreground"
+                                }`}
+                              />
+                            </SelectTrigger>
+                          </TooltipWrapper>
                           <SelectContent>
                             <SelectGroup>
                               <SelectLabel>Priority</SelectLabel>
+                              <SelectSeparator />
                               <SelectItem value="HIGH">High</SelectItem>
                               <SelectItem value="MEDIUM">Medium</SelectItem>
                               <SelectItem value="LOW">Low</SelectItem>
@@ -524,7 +609,7 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
 
                       {isFiltered && (
                         <div className="flex flex-row gap-x-2">
-                          <Button disabled={pending} variant="default">
+                          <Button disabled={pending} variant="outline">
                             Update
                           </Button>
                           {/* <p>{state.message}</p> */}
@@ -536,21 +621,57 @@ export function DataTable<TData extends TaskWithAuthor, TValue>({
                           </Button>
                         </div>
                       )}
+                      {!isFiltered && (
+                        <div>
+                          <AlertDialog>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="outline">
+                                    <Trash2 className="text-foreground" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent className="text-sm">
+                                Delete Tasks
+                              </TooltipContent>
+                            </Tooltip>
+
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you sure you want to delete this task?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                  <Button
+                                    onClick={() =>
+                                      handleDeleteMany(selectedIds)
+                                    }
+                                    variant="outline"
+                                    className="text-red-500"
+                                  >
+                                    Delete
+                                  </Button>
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      )}
                     </div>
                   </form>
-                  {!isFiltered && (
-                    <div>
-                      <DeleteTaskAlert
-                        title="Delete Tasks"
-                        onDelete={() => handleDeleteMany(selectedIds)}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
+
         <div className="flex flex-col justify-start xl:flex-row flex-1 xl:justify-end">
           <DataTablePagination {...pagination} />
         </div>

@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { getTaskCount, getAuthors, searchTask } from "@/actions/actions";
-import { useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import debounce from "lodash.debounce";
 import { Input } from "../ui/input";
 import DataTableFilters from "../table/data-table-filters";
@@ -140,34 +140,38 @@ const HomeClientPage = () => {
     queryFn: () => getAuthors(),
   });
 
-  //Columns
+  const setSort = useCallback(
+    (field: string) => {
+      const isSame = state.sortField === field;
+      let nextOrder: "asc" | "desc";
+
+      if (!isSame) {
+        nextOrder = "desc";
+      } else if (state.sortOrder === "desc") {
+        nextOrder = "asc";
+      } else {
+        nextOrder = "desc";
+      }
+
+      dispatch({
+        type: "SET_SORT",
+        payload: {
+          field,
+          order: nextOrder,
+        },
+      });
+    },
+    [state.sortField, state.sortOrder]
+  );
+
   const columns = useMemo(
     () =>
       getColumns({
         sortField: state.sortField,
         sortOrder: state.sortOrder,
-        setSort: (field) => {
-          const isSame = state.sortField === field;
-          let nextOrder: "asc" | "desc";
-
-          if (!isSame) {
-            nextOrder = "desc";
-          } else if (state.sortOrder === "desc") {
-            nextOrder = "asc";
-          } else {
-            nextOrder = "desc";
-          }
-
-          dispatch({
-            type: "SET_SORT",
-            payload: {
-              field,
-              order: nextOrder,
-            },
-          });
-        },
+        setSort,
       }),
-    [state.sortField, state.sortOrder]
+    [state.sortField, state.sortOrder, setSort]
   );
 
   //Search bar

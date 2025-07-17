@@ -24,6 +24,7 @@ import UpdatePost from "@/components/FormUpdate";
 import React from "react";
 import { useToastStore } from "@/lib/toast-store";
 import ViewTask from "@/components/ViewTask";
+import DeleteTaskAlert from "@/components/DeleteTaskAlert";
 
 export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
   const addToast = useToastStore((state) => state.addToast);
@@ -105,15 +106,17 @@ export default function ActionsCell({ task }: { task: TaskWithAuthor }) {
           </Dialog>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          {/* Delete Task */}
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                className="text-red-400 justify-start p-2"
-                onClick={handleDelete}
-              >
-                Delete Task
-              </Button>
+              <DeleteTaskAlert onDelete={() => handleDelete()}>
+                <Button
+                  variant="ghost"
+                  className="justify-start p-2 w-full text-red-500"
+                >
+                  Delete Task
+                </Button>
+              </DeleteTaskAlert>
             </DialogTrigger>
           </Dialog>
         </DropdownMenuItem>
