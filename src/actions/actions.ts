@@ -532,3 +532,12 @@ export const getTaskCount = async (
     return 0;
   }
 };
+
+//Revert databa
+export const revertDataBase = async () => {
+  await prisma.task.deleteMany({
+    where: {
+      isSeed: false,
+    },
+  });
+};

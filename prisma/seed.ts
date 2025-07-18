@@ -17,6 +17,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-01T08:09:36Z",
+          isSeed: true,
         },
         {
           title: "Task005",
@@ -26,6 +27,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-02T16:48:00Z",
+          isSeed: true,
         },
         {
           title: "Task009",
@@ -35,6 +37,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-04T01:26:24Z",
+          isSeed: true,
         },
         {
           title: "Task013",
@@ -44,6 +47,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-05T10:04:48Z",
+          isSeed: true,
         },
         {
           title: "Task017",
@@ -53,6 +57,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-06-06T18:43:12Z",
+          isSeed: true,
         },
         {
           title: "Task021",
@@ -62,6 +67,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "FEATURE",
           createdAt: "2025-06-08T03:21:36Z",
+          isSeed: true,
         },
         {
           title: "Task025",
@@ -71,6 +77,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-09T12:00:00Z",
+          isSeed: true,
         },
         {
           title: "Task029",
@@ -80,6 +87,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "FEATURE",
           createdAt: "2025-06-10T20:38:24Z",
+          isSeed: true,
         },
         {
           title: "Task033",
@@ -89,6 +97,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-12T05:16:48Z",
+          isSeed: true,
         },
         {
           title: "Task037",
@@ -98,6 +107,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-13T13:55:12Z",
+          isSeed: true,
         },
         {
           title: "Task041",
@@ -107,6 +117,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-14T22:33:36Z",
+          isSeed: true,
         },
         {
           title: "Task045",
@@ -116,6 +127,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-16T07:12:00Z",
+          isSeed: true,
         },
         {
           title: "Task049",
@@ -125,6 +137,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "FEATURE",
           createdAt: "2025-06-17T15:50:24Z",
+          isSeed: true,
         },
         {
           title: "Task053",
@@ -134,6 +147,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-19T00:28:48Z",
+          isSeed: true,
         },
         {
           title: "Task057",
@@ -143,6 +157,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-20T09:07:12Z",
+          isSeed: true,
         },
         {
           title: "Task061",
@@ -152,6 +167,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-21T17:45:36Z",
+          isSeed: true,
         },
         {
           title: "Task065",
@@ -161,6 +177,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-23T02:24:00Z",
+          isSeed: true,
         },
         {
           title: "Task069",
@@ -170,6 +187,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-24T11:02:24Z",
+          isSeed: true,
         },
         {
           title: "Task073",
@@ -179,6 +197,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-25T19:40:48Z",
+          isSeed: true,
         },
         {
           title: "Task077",
@@ -188,6 +207,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-27T04:19:12Z",
+          isSeed: true,
         },
         {
           title: "Task081",
@@ -197,6 +217,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-28T12:57:36Z",
+          isSeed: true,
         },
         {
           title: "Task085",
@@ -206,6 +227,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-29T21:36:00Z",
+          isSeed: true,
         },
         {
           title: "Task089",
@@ -215,6 +237,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-07-01T06:14:24Z",
+          isSeed: true,
         },
         {
           title: "Task093",
@@ -224,6 +247,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-07-02T14:52:48Z",
+          isSeed: true,
         },
         {
           title: "Task097",
@@ -233,6 +257,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-07-03T23:31:12Z",
+          isSeed: true,
         },
       ],
     },
@@ -256,6 +281,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-01T16:19:12Z",
+          isSeed: true,
         },
         {
           title: "Task006",
@@ -265,6 +291,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "BUG",
           createdAt: "2025-06-03T00:57:36Z",
+          isSeed: true,
         },
         {
           title: "Task010",
@@ -274,6 +301,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "ENHANCEMENT",
           createdAt: "2025-06-04T09:36:00Z",
+          isSeed: true,
         },
         {
           title: "Task014",
@@ -283,6 +311,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-05T18:14:24Z",
+          isSeed: true,
         },
         {
           title: "Task018",
@@ -292,6 +321,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-07T02:52:48Z",
+          isSeed: true,
         },
         {
           title: "Task022",
@@ -301,6 +331,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "FEATURE",
           createdAt: "2025-06-08T11:31:12Z",
+          isSeed: true,
         },
         {
           title: "Task026",
@@ -310,6 +341,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-09T20:09:36Z",
+          isSeed: true,
         },
         {
           title: "Task030",
@@ -319,6 +351,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-11T04:48:00Z",
+          isSeed: true,
         },
         {
           title: "Task034",
@@ -328,6 +361,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-12T13:26:24Z",
+          isSeed: true,
         },
         {
           title: "Task038",
@@ -337,6 +371,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-06-13T22:04:48Z",
+          isSeed: true,
         },
         {
           title: "Task042",
@@ -346,6 +381,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-15T06:43:12Z",
+          isSeed: true,
         },
         {
           title: "Task046",
@@ -355,6 +391,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-16T15:21:36Z",
+          isSeed: true,
         },
         {
           title: "Task050",
@@ -364,6 +401,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-18T00:00:00Z",
+          isSeed: true,
         },
         {
           title: "Task054",
@@ -373,6 +411,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-19T08:38:24Z",
+          isSeed: true,
         },
         {
           title: "Task058",
@@ -382,6 +421,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-20T17:16:48Z",
+          isSeed: true,
         },
         {
           title: "Task062",
@@ -391,6 +431,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-22T01:55:12Z",
+          isSeed: true,
         },
         {
           title: "Task066",
@@ -400,6 +441,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-23T10:33:36Z",
+          isSeed: true,
         },
         {
           title: "Task070",
@@ -409,6 +451,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-24T19:12:00Z",
+          isSeed: true,
         },
         {
           title: "Task074",
@@ -418,6 +461,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-26T03:50:24Z",
+          isSeed: true,
         },
         {
           title: "Task078",
@@ -427,6 +471,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-27T12:28:48Z",
+          isSeed: true,
         },
         {
           title: "Task082",
@@ -436,6 +481,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "FEATURE",
           createdAt: "2025-06-28T21:07:12Z",
+          isSeed: true,
         },
         {
           title: "Task086",
@@ -445,6 +491,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-30T05:45:36Z",
+          isSeed: true,
         },
         {
           title: "Task090",
@@ -454,6 +501,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-07-01T14:24:00Z",
+          isSeed: true,
         },
         {
           title: "Task094",
@@ -463,6 +511,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-07-02T23:02:24Z",
+          isSeed: true,
         },
         {
           title: "Task098",
@@ -472,6 +521,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-07-04T07:40:48Z",
+          isSeed: true,
         },
       ],
     },
@@ -490,6 +540,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-02T00:28:48Z",
+          isSeed: true,
         },
         {
           title: "Task007",
@@ -499,6 +550,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-03T09:07:12Z",
+          isSeed: true,
         },
         {
           title: "Task011",
@@ -508,6 +560,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-04T17:45:36Z",
+          isSeed: true,
         },
         {
           title: "Task015",
@@ -517,6 +570,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "FEATURE",
           createdAt: "2025-06-06T02:24:00Z",
+          isSeed: true,
         },
         {
           title: "Task019",
@@ -526,6 +580,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-07T11:02:24Z",
+          isSeed: true,
         },
         {
           title: "Task023",
@@ -535,6 +590,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-08T19:40:48Z",
+          isSeed: true,
         },
         {
           title: "Task027",
@@ -544,6 +600,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-06-10T04:19:12Z",
+          isSeed: true,
         },
         {
           title: "Task031",
@@ -553,6 +610,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-11T12:57:36Z",
+          isSeed: true,
         },
         {
           title: "Task035",
@@ -562,6 +620,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-12T21:36:00Z",
+          isSeed: true,
         },
         {
           title: "Task039",
@@ -571,6 +630,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-14T06:14:24Z",
+          isSeed: true,
         },
         {
           title: "Task043",
@@ -580,6 +640,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "ENHANCEMENT",
           createdAt: "2025-06-15T14:52:48Z",
+          isSeed: true,
         },
         {
           title: "Task047",
@@ -589,6 +650,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-16T23:31:12Z",
+          isSeed: true,
         },
         {
           title: "Task051",
@@ -598,6 +660,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-18T08:09:36Z",
+          isSeed: true,
         },
         {
           title: "Task055",
@@ -607,6 +670,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-19T16:48:00Z",
+          isSeed: true,
         },
         {
           title: "Task059",
@@ -616,6 +680,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "BUG",
           createdAt: "2025-06-21T01:26:24Z",
+          isSeed: true,
         },
         {
           title: "Task063",
@@ -625,6 +690,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-22T10:04:48Z",
+          isSeed: true,
         },
         {
           title: "Task067",
@@ -634,6 +700,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "BUG",
           createdAt: "2025-06-23T18:43:12Z",
+          isSeed: true,
         },
         {
           title: "Task071",
@@ -643,6 +710,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "FEATURE",
           createdAt: "2025-06-25T03:21:36Z",
+          isSeed: true,
         },
         {
           title: "Task075",
@@ -652,6 +720,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-06-26T12:00:00Z",
+          isSeed: true,
         },
         {
           title: "Task079",
@@ -661,6 +730,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-27T20:38:24Z",
+          isSeed: true,
         },
         {
           title: "Task083",
@@ -670,6 +740,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-29T05:16:48Z",
+          isSeed: true,
         },
         {
           title: "Task087",
@@ -679,6 +750,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "OTHER",
           createdAt: "2025-06-30T13:55:12Z",
+          isSeed: true,
         },
         {
           title: "Task091",
@@ -688,6 +760,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-07-01T22:33:36Z",
+          isSeed: true,
         },
         {
           title: "Task095",
@@ -697,6 +770,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-07-03T07:12:00Z",
+          isSeed: true,
         },
         {
           title: "Task099",
@@ -706,6 +780,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "BUG",
           createdAt: "2025-07-04T15:50:24Z",
+          isSeed: true,
         },
       ],
     },
@@ -724,6 +799,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "OTHER",
           createdAt: "2025-06-02T08:38:24Z",
+          isSeed: true,
         },
         {
           title: "Task008",
@@ -733,6 +809,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "BUG",
           createdAt: "2025-06-03T17:16:48Z",
+          isSeed: true,
         },
         {
           title: "Task012",
@@ -742,6 +819,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "ENHANCEMENT",
           createdAt: "2025-06-05T01:55:12Z",
+          isSeed: true,
         },
         {
           title: "Task016",
@@ -751,6 +829,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "BUG",
           createdAt: "2025-06-06T10:33:36Z",
+          isSeed: true,
         },
         {
           title: "Task020",
@@ -760,6 +839,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-06-07T19:12:00Z",
+          isSeed: true,
         },
         {
           title: "Task024",
@@ -769,6 +849,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-09T03:50:24Z",
+          isSeed: true,
         },
         {
           title: "Task028",
@@ -778,6 +859,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-10T12:28:48Z",
+          isSeed: true,
         },
         {
           title: "Task032",
@@ -787,6 +869,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-11T21:07:12Z",
+          isSeed: true,
         },
         {
           title: "Task036",
@@ -796,6 +879,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-13T05:45:36Z",
+          isSeed: true,
         },
         {
           title: "Task040",
@@ -805,6 +889,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-14T14:24:00Z",
+          isSeed: true,
         },
         {
           title: "Task044",
@@ -814,6 +899,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-15T23:02:24Z",
+          isSeed: true,
         },
         {
           title: "Task048",
@@ -823,6 +909,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-06-17T07:40:48Z",
+          isSeed: true,
         },
         {
           title: "Task052",
@@ -832,6 +919,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-18T16:19:12Z",
+          isSeed: true,
         },
         {
           title: "Task056",
@@ -841,6 +929,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "BUG",
           createdAt: "2025-06-20T00:57:36Z",
+          isSeed: true,
         },
         {
           title: "Task060",
@@ -850,6 +939,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "ENHANCEMENT",
           createdAt: "2025-06-21T09:36:00Z",
+          isSeed: true,
         },
         {
           title: "Task064",
@@ -859,6 +949,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-22T18:14:24Z",
+          isSeed: true,
         },
         {
           title: "Task068",
@@ -868,6 +959,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "OTHER",
           createdAt: "2025-06-24T02:52:48Z",
+          isSeed: true,
         },
         {
           title: "Task072",
@@ -877,6 +969,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "DOCUMENTATION",
           createdAt: "2025-06-25T11:31:12Z",
+          isSeed: true,
         },
         {
           title: "Task076",
@@ -886,6 +979,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "ENHANCEMENT",
           createdAt: "2025-06-26T20:09:36Z",
+          isSeed: true,
         },
         {
           title: "Task080",
@@ -895,6 +989,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-06-28T04:48:00Z",
+          isSeed: true,
         },
         {
           title: "Task084",
@@ -904,6 +999,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "FEATURE",
           createdAt: "2025-06-29T13:26:24Z",
+          isSeed: true,
         },
         {
           title: "Task088",
@@ -913,6 +1009,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "ENHANCEMENT",
           createdAt: "2025-06-30T22:04:48Z",
+          isSeed: true,
         },
         {
           title: "Task092",
@@ -922,6 +1019,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "LOW",
           type: "DOCUMENTATION",
           createdAt: "2025-07-02T06:43:12Z",
+          isSeed: true,
         },
         {
           title: "Task096",
@@ -931,6 +1029,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "HIGH",
           type: "DOCUMENTATION",
           createdAt: "2025-07-03T15:21:36Z",
+          isSeed: true,
         },
         {
           title: "Task100",
@@ -940,6 +1039,7 @@ export const userData: Prisma.UserCreateInput[] = [
           priority: "MEDIUM",
           type: "ENHANCEMENT",
           createdAt: "2025-07-05T00:00:00Z",
+          isSeed: true,
         },
       ],
     },

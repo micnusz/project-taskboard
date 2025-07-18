@@ -20,7 +20,6 @@ export const useDeleteManyTasks = () => {
           console.warn(`Failed to delete task with ID: ${id}`);
         }
       }
-
       await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       await queryClient.invalidateQueries({ queryKey: ["task-count"] });
 
