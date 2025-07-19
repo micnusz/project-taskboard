@@ -65,6 +65,17 @@ export const createTask = async (
   }
 
   const { title, description, status, priority, type } = parseResult.data;
+  //Hard limit on tasks
+  const totalTasks = await prisma.task.count();
+  if (totalTasks >= 250) {
+    return {
+      message: "The maximum limit of 250 tasks has been reached.",
+      success: false,
+      errors: {
+        title: ["limit_reached"],
+      },
+    };
+  }
 
   const existingTask = await prisma.task.findUnique({
     where: {
