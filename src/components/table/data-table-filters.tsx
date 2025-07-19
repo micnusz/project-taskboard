@@ -73,6 +73,23 @@ const DataTableFilters = ({
     ? `Filter By (${activeFiltersCount})`
     : "Filter By";
 
+  const handleClear = () => {
+    setPriority(undefined);
+    setStatus(undefined);
+    setType(undefined);
+    setDate(undefined);
+    setAuthor(undefined);
+    setOpen(true);
+    setView("root");
+  };
+
+  const isFiltred =
+    priority !== undefined ||
+    status !== undefined ||
+    type !== undefined ||
+    date !== undefined ||
+    author !== undefined;
+
   return (
     <Popover
       open={open}
@@ -169,18 +186,10 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={isFiltred ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
-                    onClick={() => {
-                      setPriority(undefined);
-                      setStatus(undefined);
-                      setType(undefined);
-                      setDate(undefined);
-                      setAuthor(undefined);
-                      setOpen(true);
-                      setView("root");
-                    }}
+                    onClick={handleClear}
                   >
                     Clear All Filters
                   </Button>
@@ -223,7 +232,7 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={priority !== undefined ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
                     onClick={() => setPriority(undefined)}
@@ -273,7 +282,7 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={status !== undefined ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
                     onClick={() => setStatus(undefined)}
@@ -324,7 +333,7 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={type !== undefined ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
                     onClick={() => setType(undefined)}
@@ -353,7 +362,7 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={date !== undefined ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
                     onClick={() => setDate(undefined)}
@@ -401,7 +410,7 @@ const DataTableFilters = ({
                 </CommandGroup>
                 <div className="border-t p-2">
                   <Button
-                    variant="secondary"
+                    variant={type !== undefined ? "destructive" : "muted"}
                     size="sm"
                     className="w-full"
                     onClick={() => setType(undefined)}

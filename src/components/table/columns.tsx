@@ -223,11 +223,11 @@ export const getColumns = ({
             </TooltipTrigger>
             <TooltipContent>
               <div className="flex flex-col gap-y-2">
-                <div>
+                <div className="flex flex-col gap-y-1">
                   <Label className="label">Email:</Label>
-                  <p>{author?.email}</p>
+                  <p className="text-sm">{author?.email}</p>
                 </div>
-                <div>
+                <div className="flex flex-col gap-y-1">
                   <Label className="label">Role:</Label>
                   <span>
                     {author?.role ? formatRole(author.role) : "No role"}
