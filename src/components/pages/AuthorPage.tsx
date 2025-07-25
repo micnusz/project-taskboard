@@ -5,7 +5,6 @@ import {
   getAuthorInfo,
   getAuthorTask,
   getAuthorTaskCount,
-  getTaskCount,
 } from "@/actions/actions";
 import {
   AuthorPageAction,
@@ -17,7 +16,7 @@ import TaskCard from "../TaskCard";
 import { useEffect, useMemo, useReducer } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { User } from "lucide-react";
+import { ListTodo, Loader2, User } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import TaskFilter from "../TaskFilter";
@@ -83,7 +82,7 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
     queryFn: () => getAuthorInfo(id),
   });
   //Task count
-  const { data: tasksCount } = useQuery({
+  const { data: tasksCount, isLoading: taskCountIsLoading } = useQuery({
     queryKey: [
       "task-count",
       id,
@@ -200,7 +199,7 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
         </div>
       </section>
       <section className="md:w-3/4">
-        <div className="flex flex-row gap-x-2 pb-4">
+        <div className="flex flex-row gap-x-2 pb-2 flex-wrap">
           <Input
             type="text"
             placeholder="Search"
@@ -230,11 +229,15 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
           >
             Clear
           </Button>
-          <div>
-            <Badge className="text-sm px-3 py-2" variant="outline">
-              Tasks: {tasksCount}
-            </Badge>
-          </div>
+          {/* Tasks count */}
+          <Button variant="ghost" className="ml-auto cursor-default" disabled>
+            <ListTodo className="w-4 h-4 mr-2" />
+            {taskCountIsLoading ? (
+              <Loader2 className="animate-spin w-4 h-4" />
+            ) : (
+              `Count: ${tasksCount}`
+            )}
+          </Button>
         </div>
         <div className="flex flex-wrap gap-4">
           {isFetching ? (
