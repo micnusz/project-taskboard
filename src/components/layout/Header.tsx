@@ -1,4 +1,5 @@
 "use client";
+import { Home, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 
@@ -8,12 +9,14 @@ const Header = () => {
       <nav className="flex flex-row justify-between">
         <div>
           <Link
-            href={"/"}
-            className="text-foreground hover:text-muted-foreground"
+            href="/"
+            className="text-foreground hover:text-chart-3 flex flex-row items-center"
           >
-            <h1>Taskboard</h1>
+            <LayoutGrid className="w-5 h-5 mr-2" />
+            <h1 className="text-base font-semibold">Dashboard</h1>
           </Link>
         </div>
+
         <div className="flex justify-end">
           <a
             href="https://github.com/micnusz/project-taskboard"
