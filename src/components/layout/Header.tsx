@@ -1,5 +1,5 @@
 "use client";
-import { Home, LayoutGrid } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 

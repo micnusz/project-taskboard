@@ -19,6 +19,7 @@ import DataTableFilters from "../table/data-table-filters";
 import { Button } from "../ui/button";
 import { getColumns } from "../table/columns";
 import { HomePageAction, HomePageState, TaskWithAuthor } from "@/lib/types";
+import { ListTodo, Loader2 } from "lucide-react";
 
 const initialState: HomePageState = {
   pagination: { pageIndex: 0, pageSize: 10 },
@@ -114,7 +115,7 @@ const HomeClientPage = () => {
       ),
   });
   //Get Tasks count
-  const { data: tasksCount } = useQuery<number>({
+  const { data: tasksCount, isLoading: taskCountIsLoading } = useQuery<number>({
     queryKey: [
       "task-count",
       state.queryText,
@@ -240,27 +241,28 @@ const HomeClientPage = () => {
               </Button>
             </div>
           </div>
-
-          <div className="flex flex-row gap-x-2 mb-2">
-            <DataTableFilters
-              userData={userData ?? []}
-              priority={state.priority}
-              setPriority={(val) =>
-                dispatch({ type: "SET_PRIORITY", payload: val })
-              }
-              status={state.status}
-              setStatus={(val) =>
-                dispatch({ type: "SET_STATUS", payload: val })
-              }
-              type={state.type}
-              setType={(val) => dispatch({ type: "SET_TYPE", payload: val })}
-              date={state.date}
-              setDate={(val) => dispatch({ type: "SET_DATE", payload: val })}
-              author={state.author}
-              setAuthor={(val) =>
-                dispatch({ type: "SET_AUTHOR", payload: val })
-              }
-            />
+          <div className="flex flex-row gap-x-2 mb-2 flex-wrap ">
+            <div>
+              <DataTableFilters
+                userData={userData ?? []}
+                priority={state.priority}
+                setPriority={(val) =>
+                  dispatch({ type: "SET_PRIORITY", payload: val })
+                }
+                status={state.status}
+                setStatus={(val) =>
+                  dispatch({ type: "SET_STATUS", payload: val })
+                }
+                type={state.type}
+                setType={(val) => dispatch({ type: "SET_TYPE", payload: val })}
+                date={state.date}
+                setDate={(val) => dispatch({ type: "SET_DATE", payload: val })}
+                author={state.author}
+                setAuthor={(val) =>
+                  dispatch({ type: "SET_AUTHOR", payload: val })
+                }
+              />
+            </div>
 
             <div>
               <Dialog
@@ -285,6 +287,20 @@ const HomeClientPage = () => {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
+            </div>
+            <div className="ml-auto">
+              <Button
+                variant="ghost"
+                className="ml-auto cursor-default"
+                disabled
+              >
+                <ListTodo className="w-4 h-4 mr-2" />
+                {taskCountIsLoading ? (
+                  <Loader2 className="animate-spin w-4 h-4" />
+                ) : (
+                  `Count: ${tasksCount}`
+                )}
+              </Button>
             </div>
           </div>
         </div>
