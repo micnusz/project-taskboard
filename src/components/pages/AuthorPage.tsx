@@ -5,6 +5,7 @@ import {
   getAuthorInfo,
   getAuthorTask,
   getAuthorTaskCount,
+  getTaskCount,
 } from "@/actions/actions";
 import {
   AuthorPageAction,
@@ -225,9 +226,15 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
           <Button
             variant={isFiltered ? "destructive" : "muted"}
             onClick={() => dispatch({ type: "CLEAR_FILTERS" })}
+            size="default"
           >
             Clear
           </Button>
+          <div>
+            <Badge className="text-sm px-3 py-2" variant="outline">
+              Tasks: {tasksCount}
+            </Badge>
+          </div>
         </div>
         <div className="flex flex-wrap gap-4">
           {isFetching ? (
