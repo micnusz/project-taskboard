@@ -86,6 +86,7 @@ interface DataTableProps<TData extends TaskWithAuthor, TValue> {
     pageIndex: number;
     pageSize: number;
     pageCount: number;
+    loadingState: boolean;
     onPageChange: (newPageIndex: number) => void;
     onPageSizeChange: (newPageSize: number) => void;
     canPreviousPage: boolean;

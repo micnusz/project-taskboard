@@ -5,12 +5,14 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Loader2,
 } from "lucide-react";
 
 interface DataTablePaginationProps {
   pageIndex: number;
   pageSize: number;
   pageCount: number;
+  loadingState: boolean;
   onPageChange: (newPageIndex: number) => void;
   onPageSizeChange: (newPageSize: number) => void;
   canPreviousPage: boolean;
@@ -21,6 +23,7 @@ const DataTablePagination = ({
   pageIndex,
   pageSize,
   pageCount,
+  loadingState,
   onPageChange,
   onPageSizeChange,
   canPreviousPage,
@@ -70,8 +73,13 @@ const DataTablePagination = ({
           >
             <ChevronLeft />
           </Button>
-          <span>
-            Page {pageIndex + 1} of {pageCount}
+          <span className="flex items-center space-x-1">
+            <span>Page {pageIndex + 1} of</span>
+            {loadingState ? (
+              <Loader2 className="animate-spin w-4 h-4" />
+            ) : (
+              <span>{pageCount}</span>
+            )}
           </span>
           <Button
             variant="outline"

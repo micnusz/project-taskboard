@@ -304,6 +304,7 @@ const HomeClientPage = () => {
             pageIndex: state.pagination.pageIndex,
             pageSize: state.pagination.pageSize,
             pageCount: pageCount,
+            loadingState: taskCountIsLoading,
             onPageChange: handlePageChange,
             onPageSizeChange: handlePageSizeChange,
             canPreviousPage: state.pagination.pageIndex > 0,
