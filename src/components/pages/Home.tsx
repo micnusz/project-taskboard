@@ -19,7 +19,7 @@ import DataTableFilters from "../table/data-table-filters";
 import { Button } from "../ui/button";
 import { getColumns } from "../table/columns";
 import { HomePageAction, HomePageState, TaskWithAuthor } from "@/lib/types";
-import { ListTodo, Loader2 } from "lucide-react";
+import TaskCount from "../TaskCount";
 
 const initialState: HomePageState = {
   pagination: { pageIndex: 0, pageSize: 10 },
@@ -289,18 +289,10 @@ const HomeClientPage = () => {
               </Dialog>
             </div>
             <div className="ml-auto">
-              <Button
-                variant="ghost"
-                className="ml-auto cursor-default"
-                disabled
-              >
-                <ListTodo className="w-4 h-4 mr-2" />
-                {taskCountIsLoading ? (
-                  <Loader2 className="animate-spin w-4 h-4" />
-                ) : (
-                  `Count: ${tasksCount}`
-                )}
-              </Button>
+              <TaskCount
+                tasksCount={tasksCount}
+                loadingState={taskCountIsLoading}
+              />
             </div>
           </div>
         </div>

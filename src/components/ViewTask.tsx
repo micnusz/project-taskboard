@@ -173,7 +173,7 @@ const ViewTask = ({ taskData }: ViewTaskProps) => {
         </Dialog>
         <Button
           variant="outline"
-          className="max-w-[15rem] justify-start text-red-400"
+          className="max-w-[15rem] justify-start text-red-500"
           onClick={() => handleDelete()}
         >
           Delete Task

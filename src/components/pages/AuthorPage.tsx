@@ -16,13 +16,14 @@ import TaskCard from "../TaskCard";
 import { useEffect, useMemo, useReducer } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { ListTodo, Loader2, User } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Label } from "../ui/label";
 import TaskFilter from "../TaskFilter";
 import debounce from "lodash.debounce";
 import Spinner from "@/lib/Spinner";
 import DataTablePagination from "../table/data-table-pagination";
+import TaskCount from "../TaskCount";
+import { User } from "lucide-react";
 
 type AuthorPageProps = {
   id: string;
@@ -230,14 +231,10 @@ const AuthorPage = ({ id }: AuthorPageProps) => {
             Clear
           </Button>
           {/* Tasks count */}
-          <Button variant="ghost" className="ml-auto cursor-default" disabled>
-            <ListTodo className="w-4 h-4 mr-2" />
-            {taskCountIsLoading ? (
-              <Loader2 className="animate-spin w-4 h-4" />
-            ) : (
-              `Count: ${tasksCount}`
-            )}
-          </Button>
+          <TaskCount
+            tasksCount={tasksCount}
+            loadingState={taskCountIsLoading}
+          />
         </div>
         <div className="flex flex-wrap gap-4">
           {isFetching ? (
