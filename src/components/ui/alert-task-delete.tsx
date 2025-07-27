@@ -21,7 +21,7 @@ export default function AlertDelete({
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-      onClose?.(); // powiadamiamy rodzica o zamknięciu
+      onClose?.();
     }, 5000);
 
     return () => clearTimeout(timer);

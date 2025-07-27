@@ -17,7 +17,7 @@ import { ReactNode } from "react";
 type DeleteTaskAlertProps = {
   title?: string;
   onDelete: () => void;
-  children: ReactNode; // trigger element
+  children: ReactNode;
 };
 
 export default function DeleteTaskAlert({
